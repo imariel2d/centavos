@@ -49,6 +49,8 @@ interface DArticle {
 }
 
 // ── Directus → domain mappers ────────────────────────────────
+const FALLBACK_AUTHOR: Author = { slug: "centavo", name: "Centavo", role: "" };
+
 const mapAuthor = (a: DAuthor): Author => ({
   slug: a.slug,
   name: a.name,
@@ -62,20 +64,27 @@ const mapHero = (a: DArticle): ImageRef => ({
   caption: a.hero_image_caption ?? undefined,
 });
 
+// Author may arrive as the joined object (fields=*,author.*), a bare slug
+// string, or null when the M2O is empty / the related row was deleted.
+function resolveAuthor(raw: DArticle["author"] | null | undefined): Author {
+  if (!raw) return FALLBACK_AUTHOR;
+  if (typeof raw === "string") return { slug: raw, name: raw, role: "" };
+  if (typeof raw === "object" && raw.slug) return mapAuthor(raw);
+  return FALLBACK_AUTHOR;
+}
+
 const mapArticle = (a: Row<DArticle>): Article => ({
   slug: a.slug,
-  title: a.title,
-  short: a.short,
-  excerpt: a.excerpt,
+  title: a.title ?? "",
+  short: a.short ?? a.title ?? "",
+  excerpt: a.excerpt ?? "",
   category: a.category,
-  author: typeof a.author === "string"
-    ? { slug: a.author, name: a.author, role: "" }
-    : mapAuthor(a.author),
-  publishedAt: a.published_at,
-  readMinutes: a.read_minutes,
+  author: resolveAuthor(a.author),
+  publishedAt: a.published_at ?? new Date().toISOString(),
+  readMinutes: a.read_minutes ?? 0,
   heroImage: mapHero(a),
-  body: a.body ?? [],
-  bodyEli5: a.body_eli5 ?? undefined,
+  body: Array.isArray(a.body) ? a.body : [],
+  bodyEli5: Array.isArray(a.body_eli5) ? a.body_eli5 : undefined,
 });
 
 const PUB = "filter[status][_eq]=published";

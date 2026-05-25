@@ -37,7 +37,7 @@ export default async function HomePage() {
 
       <main>
         <HeroKicker edition={24} />
-        <FeaturedHero article={hero} />
+        {hero && <FeaturedHero article={hero} />}
         <div className="mx-auto max-w-screen-md">
           <CategoryStrip />
         </div>
