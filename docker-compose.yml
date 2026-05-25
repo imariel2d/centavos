@@ -1,0 +1,59 @@
+services:
+  database:
+    image: postgis/postgis:16-master
+    container_name: centavos-db
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: directus
+      POSTGRES_PASSWORD: directus
+      POSTGRES_DB: directus
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U directus -d directus"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  cache:
+    image: redis:7-alpine
+    container_name: centavos-cache
+    restart: unless-stopped
+
+  directus:
+    image: directus/directus:11.5.1
+    container_name: centavos-directus
+    restart: unless-stopped
+    ports:
+      - "8055:8055"
+    volumes:
+      - directus-uploads:/directus/uploads
+      - ./directus:/directus/snapshot
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_started
+    environment:
+      SECRET: "please-change-me-in-prod"
+      ADMIN_EMAIL: "admin@centavo.mx"
+      ADMIN_PASSWORD: "admin"
+
+      DB_CLIENT: "pg"
+      DB_HOST: "database"
+      DB_PORT: "5432"
+      DB_DATABASE: "directus"
+      DB_USER: "directus"
+      DB_PASSWORD: "directus"
+
+      CACHE_ENABLED: "true"
+      CACHE_STORE: "redis"
+      REDIS: "redis://cache:6379"
+
+      PUBLIC_URL: "http://localhost:8055"
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "true"
+
+volumes:
+  db-data:
+  directus-uploads:
