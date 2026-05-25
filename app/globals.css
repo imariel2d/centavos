@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────
+   Centavo · Design tokens (Tailwind v4 via @theme)
+   ────────────────────────────────────────────────────────────── */
+@theme {
+  /* Brand */
+  --color-bg:             #faf3e3;
+  --color-surface:        #ffffff;
+  --color-sand:           #f5dcb8;
+  --color-peach:          #f7d1bb;
+  --color-sky:            #cfe1e8;
+
+  --color-mandarina:      #ed7e3c;
+  --color-mandarina-deep: #b8542a;
+  --color-yolk:           #f5b833;
+
+  --color-ink:            #2a1a10;
+  --color-ink-soft:       #6e5849;
+  --color-rule:           #ead9c2;
+
+  /* Fonts — wiring se hace en app/layout.tsx con next/font */
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-body:    var(--font-manrope), -apple-system, system-ui, sans-serif;
+  --font-hand:    var(--font-caveat), cursive;
+}
+
+/* Globals */
+html {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100dvh;
+}
+
+/* Ocultar scrollbars en strips horizontales */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Tipografía dentro del cuerpo de un artículo (WYSIWYG output) */
+.prose-centavo p { margin: 0 0 16px; font-size: 16px; line-height: 1.65; color: var(--color-ink); }
+.prose-centavo p b, .prose-centavo p strong { font-weight: 700; }
+.prose-centavo a { color: var(--color-mandarina-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* Animación sutil al hover de cards */
+.card-hover { transition: transform .18s ease, box-shadow .18s ease; }
+.card-hover:hover { transform: translateY(-2px); }
