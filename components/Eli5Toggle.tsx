@@ -12,7 +12,7 @@ export function Eli5Toggle({ on }: { on: boolean }) {
   const href = `${pathname}${params.size ? `?${params.toString()}` : ""}`;
 
   return (
-    <div className="px-4 pb-5">
+    <div className="px-4 pt-5 pb-5">
       <Link
         href={href}
         scroll={false}

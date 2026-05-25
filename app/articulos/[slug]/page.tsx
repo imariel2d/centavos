@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Chip } from "@/components/Chip";
 import { Eli5Toggle } from "@/components/Eli5Toggle";
+import { DebugLog } from "@/components/DebugLog";
 import { ArticleBody } from "@/components/ArticleBody";
 import { ArticleCard } from "@/components/ArticleCard";
 import { ImgPlaceholder } from "@/components/ImgPlaceholder";
@@ -70,10 +71,12 @@ export default async function ArticlePage({
 }) {
   const { slug } = await params;
   const { eli5: eli5Param } = await searchParams;
-  const eli5 = eli5Param === "1" && (await getArticleBySlug(slug))?.bodyEli5 != null;
 
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
+
+  const hasEli5 = article.bodyEli5 != null;
+  const eli5 = hasEli5 && eli5Param === "1";
 
   const related = await getRelatedArticles(slug, 2);
   const blocks = eli5 && article.bodyEli5 ? article.bodyEli5 : article.body;
@@ -82,6 +85,7 @@ export default async function ArticlePage({
 
   return (
     <>
+      <DebugLog label={`article:${article.slug}`} data={{ article, eli5, blocks, related }} />
       <Header />
 
       <main className="mx-auto max-w-screen-md pb-12">
@@ -123,11 +127,11 @@ export default async function ArticlePage({
           </div>
         </header>
 
-        {/* ELI5 toggle */}
-        <Eli5Toggle on={eli5} />
+        {/* ELI5 toggle — only when an ELI5 version exists for this article */}
+        {hasEli5 && <Eli5Toggle on={eli5} />}
 
         {/* Hero image */}
-        <div className="px-4 pb-1">
+        <div className="px-4 pt-5 pb-1">
           <ImgPlaceholder
             label={eli5 ? "ilustración amigable" : "foto editorial"}
             height={220}
@@ -146,23 +150,6 @@ export default async function ArticlePage({
         <article className="pt-6">
           <ArticleBody blocks={blocks} />
         </article>
-
-        {/* Share */}
-        <section className="px-5 pt-6 pb-2">
-          <div className="text-[11px] text-ink-soft font-bold tracking-wider uppercase mb-2.5">
-            Compártelo con la banda
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {["WhatsApp", "X", "Copiar"].map((s) => (
-              <button
-                key={s}
-                className="px-4 py-2.5 bg-surface border border-rule rounded-full text-[13px] font-semibold"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </section>
 
         {/* Related */}
         {related.length > 0 && (

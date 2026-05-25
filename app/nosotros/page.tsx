@@ -32,6 +32,7 @@ const NUMBERS = [
 
 export default async function AboutPage() {
   const authors = await getAllAuthors();
+  const contactEmail = process.env.CONTACT_EMAIL;
   return (
     <>
       <Header />
@@ -109,23 +110,25 @@ export default async function AboutPage() {
           </ul>
         </section>
 
-        {/* CTA */}
-        <section id="contacto" className="px-4 pt-8 scroll-mt-20">
-          <div className="bg-mandarina text-ink rounded-3xl px-5 py-6">
-            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.025em] leading-snug mb-2.5">
-              ¿Tienes una historia que contar?
-            </h2>
-            <p className="text-[13px] opacity-85 leading-relaxed mb-3.5">
-              Si te tocó perderle el miedo a algo financiero, queremos saber. Las mejores historias salen aquí.
-            </p>
-            <a
-              href="mailto:hola@centavo.mx"
-              className="inline-block bg-ink text-bg rounded-full px-5 py-2.5 text-[13px] font-bold"
-            >
-              Cuéntanos →
-            </a>
-          </div>
-        </section>
+        {/* CTA — only rendered when CONTACT_EMAIL is set */}
+        {contactEmail && (
+          <section id="contacto" className="px-4 pt-8 scroll-mt-20">
+            <div className="bg-mandarina text-ink rounded-3xl px-5 py-6">
+              <h2 className="font-display text-[22px] font-extrabold tracking-[-0.025em] leading-snug mb-2.5">
+                ¿Tienes una historia que contar?
+              </h2>
+              <p className="text-[13px] opacity-85 leading-relaxed mb-3.5">
+                Si te tocó perderle el miedo a algo financiero, queremos saber. Las mejores historias salen aquí.
+              </p>
+              <a
+                href={`mailto:${contactEmail}`}
+                className="inline-block bg-ink text-bg rounded-full px-5 py-2.5 text-[13px] font-bold"
+              >
+                Cuéntanos →
+              </a>
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />

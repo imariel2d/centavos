@@ -2,6 +2,7 @@ import "server-only";
 
 const URL = process.env.DIRECTUS_URL ?? "http://localhost:8055";
 const TOKEN = process.env.DIRECTUS_TOKEN;
+const IS_DEV = process.env.NODE_ENV !== "production";
 
 type DirectusList<T> = { data: T[] };
 type DirectusItem<T> = { data: T };
@@ -16,10 +17,16 @@ export async function directusFetch<T>(
   };
   if (TOKEN) headers.authorization = `Bearer ${TOKEN}`;
 
+  // Dev: bypass Next data cache so admin edits show up immediately.
+  // Prod: 60s revalidate to keep request volume sane.
+  const cacheOpts = IS_DEV
+    ? { cache: "no-store" as const }
+    : { next: { revalidate: 60, ...(init as { next?: object }).next } };
+
   const r = await fetch(`${URL}${path}`, {
     ...init,
     headers,
-    next: { revalidate: 60, ...(init as { next?: object }).next },
+    ...cacheOpts,
   });
   if (!r.ok) {
     throw new Error(`Directus ${init.method ?? "GET"} ${path} → ${r.status} ${await r.text()}`);
