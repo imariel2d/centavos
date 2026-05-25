@@ -1,0 +1,22 @@
+# Reverse-proxies HTTPS traffic on $DOMAIN to the directus container.
+# Caddy fetches a Let's Encrypt cert automatically on first start.
+
+{$DOMAIN} {
+    reverse_proxy directus:8055 {
+        # Let Directus see the original host + scheme
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    encode gzip zstd
+
+    # Reasonable security defaults
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+}

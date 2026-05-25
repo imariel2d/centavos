@@ -1,0 +1,96 @@
+# Production stack for a single-VM DigitalOcean Droplet.
+# Reads everything from .env in this directory.
+#
+#   docker compose --env-file .env up -d
+#
+# Includes Caddy as an HTTPS reverse proxy in front of Directus.
+# Caddy handles Let's Encrypt automatically as long as DOMAIN points
+# at the droplet's public IP.
+
+services:
+  database:
+    image: postgis/postgis:16-master
+    container_name: centavos-db
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER:-directus}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-directus}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-directus} -d ${DB_NAME:-directus}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  cache:
+    image: redis:7-alpine
+    container_name: centavos-cache
+    restart: unless-stopped
+
+  directus:
+    image: directus/directus:11.5.1
+    container_name: centavos-directus
+    restart: unless-stopped
+    expose:
+      - "8055"        # only reachable from inside the Docker network
+    volumes:
+      - directus-uploads:/directus/uploads
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_started
+    environment:
+      KEY: ${KEY}
+      SECRET: ${SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
+      DB_CLIENT: "pg"
+      DB_HOST: "database"
+      DB_PORT: "5432"
+      DB_DATABASE: ${DB_NAME:-directus}
+      DB_USER: ${DB_USER:-directus}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      CACHE_ENABLED: "true"
+      CACHE_STORE: "redis"
+      CACHE_AUTO_PURGE: "true"
+      REDIS: "redis://cache:6379"
+
+      PUBLIC_URL: ${PUBLIC_URL}
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      TELEMETRY: "false"
+
+      # ── Optional S3 storage ────────────────────────────────
+      STORAGE_LOCATIONS: ${STORAGE_LOCATIONS:-local}
+      STORAGE_S3_DRIVER: "s3"
+      STORAGE_S3_KEY:    ${STORAGE_S3_KEY:-}
+      STORAGE_S3_SECRET: ${STORAGE_S3_SECRET:-}
+      STORAGE_S3_BUCKET: ${STORAGE_S3_BUCKET:-}
+      STORAGE_S3_REGION: ${STORAGE_S3_REGION:-}
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: centavos-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      DOMAIN: ${DOMAIN}
+    depends_on:
+      - directus
+
+volumes:
+  db-data:
+  directus-uploads:
+  caddy-data:
+  caddy-config:

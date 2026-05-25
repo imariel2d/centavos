@@ -28,6 +28,10 @@ pnpm-lock.yaml
 # env files
 .env*
 !.env.example
+!deploy/.env.example
+
+# populated deploy artifact — contains secrets
+deploy/docker-compose.prod.yml
 
 # vercel
 .vercel
