@@ -22,7 +22,7 @@ import {
   getStories,
 } from "@/lib/articles";
 
-export const revalidate = 3600; // ISR: revalida cada hora
+export const revalidate = 60; // ISR: revalida cada minuto
 
 export default async function HomePage() {
   const [articles, homePage, stories, categories] = await Promise.all([
