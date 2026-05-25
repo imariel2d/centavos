@@ -5,11 +5,14 @@ import { Chip } from "./Chip";
 import { Eli5Toggle } from "./Eli5Toggle";
 import { ArticleBody } from "./ArticleBody";
 import { ImgPlaceholder } from "./ImgPlaceholder";
+import Image from "next/image";
 import type { ArticleBlock } from "@/types";
 
 interface Props {
   body: ArticleBlock[];
   bodyEli5: ArticleBlock[] | null;
+  heroImageUrl?: string;
+  heroImageAlt: string;
   heroCaption?: string;
   categoryName: string;
   title: string;
@@ -21,6 +24,8 @@ interface Props {
 export function ArticleShell({
   body,
   bodyEli5,
+  heroImageUrl,
+  heroImageAlt,
   heroCaption,
   categoryName: catName,
   title,
@@ -67,13 +72,24 @@ export function ArticleShell({
 
       {/* Hero image */}
       <div className="px-4 pt-5 pb-1">
-        <ImgPlaceholder
-          label={eli5 ? "ilustración amigable" : "foto editorial"}
-          height={220}
-          bg={eli5 ? "var(--color-peach)" : "var(--color-sand)"}
-          fg="var(--color-mandarina-deep)"
-          rounded
-        />
+        {heroImageUrl ? (
+          <Image
+            src={heroImageUrl}
+            alt={heroImageAlt}
+            width={768}
+            height={440}
+            className="w-full h-auto rounded-2xl object-cover"
+            priority
+          />
+        ) : (
+          <ImgPlaceholder
+            label={eli5 ? "ilustración amigable" : "foto editorial"}
+            height={220}
+            bg={eli5 ? "var(--color-peach)" : "var(--color-sand)"}
+            fg="var(--color-mandarina-deep)"
+            rounded
+          />
+        )}
         {heroCaption && (
           <p className="text-[11px] text-ink-soft italic mt-1.5 px-1.5 leading-snug">
             {heroCaption} <span className="not-italic opacity-60">· Foto: Cortesía</span>

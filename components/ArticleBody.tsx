@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ArticleBlock } from "@/types";
 import { MiniChart } from "./MiniChart";
 
@@ -33,9 +34,19 @@ export function ArticleBody({ blocks }: { blocks: ArticleBlock[] }) {
           case "image":
             return (
               <figure key={i} className="my-5 px-4">
-                <div className="w-full h-56 rounded-2xl bg-sand grid place-items-center text-mandarina-deep text-xs uppercase tracking-wide">
-                  imagen · {block.image.alt}
-                </div>
+                {block.image.url ? (
+                  <Image
+                    src={block.image.url}
+                    alt={block.image.alt}
+                    width={block.image.width ?? 768}
+                    height={block.image.height ?? 432}
+                    className="w-full h-auto rounded-2xl object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-56 rounded-2xl bg-sand grid place-items-center text-mandarina-deep text-xs uppercase tracking-wide">
+                    imagen · {block.image.alt}
+                  </div>
+                )}
                 {block.image.caption && (
                   <figcaption className="mt-2 px-1 text-[11px] text-ink-soft italic leading-snug">
                     {block.image.caption}

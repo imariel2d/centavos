@@ -94,6 +94,8 @@ export default async function ArticlePage({
           <ArticleShell
             body={article.body}
             bodyEli5={article.bodyEli5 ?? null}
+            heroImageUrl={article.heroImage.url}
+            heroImageAlt={article.heroImage.alt}
             heroCaption={article.heroImage.caption}
             categoryName={catName}
             title={article.title}
