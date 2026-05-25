@@ -32,10 +32,10 @@ export function Logo({
         className="font-display font-extrabold leading-none tracking-[-0.03em]"
         style={{ color, fontSize: size * 0.84 }}
       >
-        centavo
+        centavos
       </span>
     </span>
   );
   if (!href) return inner;
-  return <Link href={href} aria-label="Centavo · Inicio">{inner}</Link>;
+  return <Link href={href} aria-label="Centavos · Inicio">{inner}</Link>;
 }

@@ -8,7 +8,7 @@ export function Manifesto() {
           <span className="text-yolk italic">Ni tú, ni nosotros</span> tampoco.
         </h2>
         <p className="text-[14px] md:text-base leading-relaxed opacity-80 max-w-prose">
-          En Centavo te contamos lo que ojalá te hubieran enseñado en la escuela. Sin choros, sin recetas mágicas, sin venderte productos que no necesitas.
+          En Centavos te contamos lo que ojalá te hubieran enseñado en la escuela. Sin choros, sin recetas mágicas, sin venderte productos que no necesitas.
         </p>
       </div>
     </section>

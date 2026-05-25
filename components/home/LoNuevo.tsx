@@ -8,7 +8,7 @@ const TILE_BG = ["var(--color-peach)", "var(--color-sand)", "var(--color-sky)"];
 export function LoNuevo({ articles }: { articles: Article[] }) {
   return (
     <section className="mx-auto max-w-screen-md px-5 pt-10 md:pt-14">
-      <SectionHead kicker="Esta semana" title="Lo nuevo en Centavo" />
+      <SectionHead kicker="Esta semana" title="Lo nuevo en Centavos" />
       <div className="mt-5">
         {articles.slice(0, 3).map((a, i) => (
           <Link
