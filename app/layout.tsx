@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Manrope, Caveat } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import { organizationJsonLd, websiteJsonLd, SITE } from "@/lib/seo";
 import "./globals.css";
 
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es-MX" className={`${bricolage.variable} ${manrope.variable} ${caveat.variable}`}>
       <body className="bg-bg text-ink antialiased">
         {children}
+        <Analytics />
 
         {/* JSON-LD raíz: organización + sitio */}
         <Script id="ld-organization" type="application/ld+json" strategy="afterInteractive"
