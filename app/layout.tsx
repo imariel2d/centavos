@@ -35,7 +35,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Centavo · Finanzas sin sustos para la banda",
+    default: "Centavos · Finanzas sin sustos para la banda",
     template: "%s · Centavo",
   },
   description:
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
     locale: "es_MX",
     url: SITE.url,
     siteName: SITE.name,
-    title: "Centavo · Finanzas sin sustos para la banda",
+    title: "Centavos · Finanzas sin sustos para la banda",
     description: "Blog financiero mexicano para jóvenes que apenas empiezan con la lana.",
     images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "Centavo" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Centavo · Finanzas sin sustos",
+    title: "Centavos · Finanzas sin sustos",
     description: "Blog financiero mexicano sin choros.",
     // site: "@centavo_mx",
     // creator: "@centavo_mx",
