@@ -104,7 +104,9 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const row = await directusOne<Row<DArticle>>(
     `/items/articles/${encodeURIComponent(slug)}?${ARTICLE_FIELDS}`,
   );
-  return row ? mapArticle(row) : null;
+  // Single-item endpoint doesn't take a filter; enforce published here.
+  if (!row || row.status !== "published") return null;
+  return mapArticle(row);
 }
 
 export async function getArticlesByCategory(category: CategorySlug): Promise<Article[]> {
@@ -201,8 +203,11 @@ export async function getAllCategories(): Promise<Category[]> {
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   const row = USE_MOCK_DATA
     ? MOCK_CATEGORIES.find((c) => c.slug === slug) ?? null
-    : await directusOne<DCategory>(`/items/categories/${encodeURIComponent(slug)}`);
+    : await directusOne<Row<DCategory>>(`/items/categories/${encodeURIComponent(slug)}`);
   if (!row) return null;
+  // Single-item endpoint doesn't take a filter; enforce published here.
+  // Mock data has no status field — treat as published.
+  if (!USE_MOCK_DATA && (row as Row<DCategory>).status !== "published") return null;
   const counts = await getArticleCountsByCategory();
   return { ...row, count: counts[row.slug] ?? 0 };
 }

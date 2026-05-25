@@ -40,12 +40,24 @@ export async function directusList<T>(path: string): Promise<T[]> {
 }
 
 export async function directusOne<T>(path: string): Promise<T | null> {
-  const json = await directusFetch<DirectusItem<T> | DirectusList<T>>(path);
-  if (Array.isArray((json as DirectusList<T>).data)) {
-    const arr = (json as DirectusList<T>).data;
-    return arr[0] ?? null;
+  try {
+    const json = await directusFetch<DirectusItem<T> | DirectusList<T>>(path);
+    if (Array.isArray((json as DirectusList<T>).data)) {
+      const arr = (json as DirectusList<T>).data;
+      return arr[0] ?? null;
+    }
+    return (json as DirectusItem<T>).data ?? null;
+  } catch (err) {
+    // Directus returns 403 (not 404) for unknown PKs — it declines to leak
+    // existence. Both 403 and 404 on a single-item lookup mean "not found"
+    // from the caller's perspective, so the route can render its own 404.
+    const msg = err instanceof Error ? err.message : "";
+    if (msg.includes("→ 403") || msg.includes("→ 404")) {
+      console.warn(`[directus] ${path} → treated as missing`);
+      return null;
+    }
+    throw err;
   }
-  return (json as DirectusItem<T>).data ?? null;
 }
 
 // Returns a same-origin URL so the browser never talks to Directus directly.
