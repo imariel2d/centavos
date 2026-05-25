@@ -2,14 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Script from "next/script";
+import { Suspense } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Chip } from "@/components/Chip";
-import { Eli5Toggle } from "@/components/Eli5Toggle";
-import { DebugLog } from "@/components/DebugLog";
-import { ArticleBody } from "@/components/ArticleBody";
+import { ArticleShell } from "@/components/ArticleShell";
 import { ArticleCard } from "@/components/ArticleCard";
-import { ImgPlaceholder } from "@/components/ImgPlaceholder";
+import { DebugLog } from "@/components/DebugLog";
 import {
   getAllArticles,
   getArticleBySlug,
@@ -22,7 +20,6 @@ export const revalidate = 3600;
 export const dynamicParams = true;
 
 type Params = { slug: string };
-type SearchParams = { eli5?: string };
 
 export async function generateStaticParams(): Promise<Params[]> {
   const articles = await getAllArticles();
@@ -64,28 +61,22 @@ export async function generateMetadata(
 
 export default async function ArticlePage({
   params,
-  searchParams,
 }: {
   params: Promise<Params>;
-  searchParams: Promise<SearchParams>;
 }) {
   const { slug } = await params;
-  const { eli5: eli5Param } = await searchParams;
 
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const hasEli5 = article.bodyEli5 != null;
-  const eli5 = hasEli5 && eli5Param === "1";
-
   const related = await getRelatedArticles(slug, 2);
-  const blocks = eli5 && article.bodyEli5 ? article.bodyEli5 : article.body;
   const categorySlug = article.category;
   const catName = categoryName(categorySlug);
+  const publishedLabel = `${formatDate(article.publishedAt)} · ⏱ ${article.readMinutes} min`;
 
   return (
     <>
-      <DebugLog label={`article:${article.slug}`} data={{ article, eli5, blocks, related }} />
+      <DebugLog label={`article:${article.slug}`} data={{ article, related }} />
       <Header />
 
       <main className="mx-auto max-w-screen-md pb-12">
@@ -98,58 +89,19 @@ export default async function ArticlePage({
           <span className="text-ink truncate max-w-[60%]">{article.short}</span>
         </nav>
 
-        {/* Title block — colored card */}
-        <header className="px-4 pt-3">
-          <div className={`rounded-3xl px-5 py-6 ${eli5 ? "bg-mandarina text-bg" : "bg-peach text-ink"}`}>
-            <Chip
-              bg="var(--color-ink)"
-              fg={eli5 ? "var(--color-mandarina)" : "var(--color-bg)"}
-              size="md"
-            >
-              {catName}
-            </Chip>
-            <h1 className="font-display text-[30px] md:text-[42px] font-extrabold tracking-[-0.034em] leading-[1.02] mt-4 mb-4 text-balance">
-              {article.title}
-            </h1>
-            <div className="flex items-center gap-2.5">
-              <div
-                className="w-9 h-9 rounded-full flex-shrink-0"
-                style={{ background: eli5 ? "var(--color-bg)" : "var(--color-surface)" }}
-                aria-hidden
-              />
-              <div>
-                <div className="font-bold text-[13px]">{article.author.name}</div>
-                <div className="text-[11px] opacity-70">
-                  {formatDate(article.publishedAt)} · ⏱ {article.readMinutes} min
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* ELI5 toggle — only when an ELI5 version exists for this article */}
-        {hasEli5 && <Eli5Toggle on={eli5} />}
-
-        {/* Hero image */}
-        <div className="px-4 pt-5 pb-1">
-          <ImgPlaceholder
-            label={eli5 ? "ilustración amigable" : "foto editorial"}
-            height={220}
-            bg={eli5 ? "var(--color-peach)" : "var(--color-sand)"}
-            fg="var(--color-mandarina-deep)"
-            rounded
+        {/* Client shell handles eli5 toggle via searchParams */}
+        <Suspense>
+          <ArticleShell
+            body={article.body}
+            bodyEli5={article.bodyEli5 ?? null}
+            heroCaption={article.heroImage.caption}
+            categoryName={catName}
+            title={article.title}
+            authorName={article.author.name}
+            publishedLabel={publishedLabel}
+            slug={article.slug}
           />
-          {article.heroImage.caption && (
-            <p className="text-[11px] text-ink-soft italic mt-1.5 px-1.5 leading-snug">
-              {article.heroImage.caption} <span className="not-italic opacity-60">· Foto: Cortesía</span>
-            </p>
-          )}
-        </div>
-
-        {/* Body */}
-        <article className="pt-6">
-          <ArticleBody blocks={blocks} />
-        </article>
+        </Suspense>
 
         {/* Related */}
         {related.length > 0 && (
