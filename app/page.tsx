@@ -14,7 +14,6 @@ import { CategoriesGrid } from "@/components/home/CategoriesGrid";
 import { AboutTeaser } from "@/components/home/AboutTeaser";
 import { GlossaryTeaser } from "@/components/home/GlossaryTeaser";
 import { NewsletterCTA } from "@/components/home/NewsletterCTA";
-import { SponsorSlot } from "@/components/home/SponsorSlot";
 import { MoreArticlesGrid } from "@/components/home/MoreArticlesGrid";
 import {
   getAllCategories,
@@ -53,7 +52,6 @@ export default async function HomePage() {
         <AboutTeaser />
         <GlossaryTeaser />
         <NewsletterCTA />
-        <SponsorSlot />
         <MoreArticlesGrid articles={rest} />
       </main>
 

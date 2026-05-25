@@ -9,11 +9,16 @@ export function StoriesCarousel({ stories }: { stories: Story[] }) {
       <div className="mx-auto max-w-screen-md px-5">
         <SectionHead kicker="Historias reales" title="La banda nos cuenta" />
       </div>
-      <div className="mx-auto max-w-screen-md flex gap-3 overflow-x-auto no-scrollbar px-4 mt-4 pb-2">
+      {/* Mobile: swipeable row. Desktop: grid (no horizontal scroll). */}
+      <div
+        className="mx-auto max-w-screen-md mt-4 px-4 pb-2
+          flex gap-3 overflow-x-auto no-scrollbar
+          md:grid md:grid-cols-3 md:overflow-visible"
+      >
         {stories.map((s, i) => (
           <article
             key={i}
-            className="flex-shrink-0 w-72 rounded-3xl p-5"
+            className="flex-shrink-0 w-72 rounded-3xl p-5 md:w-auto"
             style={{ background: CARD_BG[i % CARD_BG.length] }}
           >
             <div className="font-hand text-mandarina-deep text-3xl leading-none mb-2" aria-hidden>&ldquo;</div>

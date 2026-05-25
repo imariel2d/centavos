@@ -86,25 +86,6 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           </div>
         </header>
 
-        {/* Filtros */}
-        <section className="px-4 pt-7">
-          <div className="text-[11px] text-ink-soft font-bold tracking-wider uppercase mb-2.5 px-1">
-            Filtrar por subtema
-          </div>
-          <div className="flex gap-1.5 flex-wrap">
-            {["Todo", "Lo básico", "Avanzado", "Apps", "Bancos"].map((t, i) => (
-              <span
-                key={t}
-                className={`px-3 py-1.5 rounded-full text-[12px] font-semibold ${
-                  i === 0 ? "bg-ink text-bg" : "bg-surface text-ink border border-rule"
-                }`}
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </section>
-
         {/* Lista de artículos */}
         <section className="px-4 pt-6">
           {articles.length === 0 ? (

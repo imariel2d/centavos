@@ -1,22 +1,31 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 
-const FOOTER_COLS = [
-  { h: "Temas", items: [
-    { name: "Ahorro",   href: "/categorias/ahorro"   },
-    { name: "Créditos", href: "/categorias/creditos" },
-    { name: "AFORE",    href: "/categorias/afore"    },
-    { name: "PPR",      href: "/categorias/ppr"      },
-  ]},
-  { h: "Centavo", items: [
-    { name: "Acerca de",   href: "/nosotros" },
-    { name: "Equipo",      href: "/nosotros#equipo" },
-    { name: "Newsletter",  href: "#newsletter" },
-    { name: "Contacto",    href: "/nosotros#contacto" },
-  ]},
-];
-
 export function Footer() {
+  const hasContact = Boolean(process.env.CONTACT_EMAIL);
+
+  // "Newsletter" and "Contacto" depend on CONTACT_EMAIL being configured.
+  const centavoItems = [
+    { name: "Acerca de", href: "/nosotros" },
+    { name: "Equipo",    href: "/nosotros#equipo" },
+    ...(hasContact
+      ? [
+          { name: "Newsletter", href: "#newsletter" },
+          { name: "Contacto",   href: "/nosotros#contacto" },
+        ]
+      : []),
+  ];
+
+  const cols = [
+    { h: "Temas", items: [
+      { name: "Ahorro",   href: "/categorias/ahorro"   },
+      { name: "Créditos", href: "/categorias/creditos" },
+      { name: "AFORE",    href: "/categorias/afore"    },
+      { name: "PPR",      href: "/categorias/ppr"      },
+    ]},
+    { h: "Centavo", items: centavoItems },
+  ];
+
   return (
     <footer className="bg-ink text-bg">
       <div className="mx-auto max-w-screen-lg px-5 py-10 md:py-14">
@@ -26,7 +35,7 @@ export function Footer() {
         </p>
 
         <div className="grid grid-cols-2 gap-6 mt-8">
-          {FOOTER_COLS.map((col) => (
+          {cols.map((col) => (
             <div key={col.h}>
               <div className="text-[10px] font-extrabold tracking-[0.06em] text-mandarina uppercase mb-3">
                 {col.h}

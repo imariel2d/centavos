@@ -5,7 +5,7 @@
 //   - true            → data/mock.ts (offline / preview / tests)
 // ──────────────────────────────────────────────────────────────
 import "server-only";
-import { directusList, directusOne, fileUrl } from "@/lib/directus";
+import { directusFetch, directusList, directusOne, fileUrl } from "@/lib/directus";
 import { USE_MOCK_DATA } from "@/lib/data-source";
 import {
   ARTICLES as MOCK_ARTICLES,
@@ -165,14 +165,37 @@ export async function searchArticles(query: string): Promise<Article[]> {
 }
 
 // ── Categories ───────────────────────────────────────────────
+// Counts come from a live aggregate over published articles — the `count`
+// field on the Directus category row is ignored (treat it as a placeholder).
+async function getArticleCountsByCategory(): Promise<Record<string, number>> {
+  if (USE_MOCK_DATA) {
+    const counts: Record<string, number> = {};
+    for (const a of MOCK_ARTICLES) counts[a.category] = (counts[a.category] ?? 0) + 1;
+    return counts;
+  }
+  const json = await directusFetch<{ data: { category: string; count: string | number }[] }>(
+    `/items/articles?aggregate[count]=*&groupBy[]=category&${PUB}`,
+  );
+  return Object.fromEntries(json.data.map((r) => [r.category, Number(r.count)]));
+}
+
 export async function getAllCategories(): Promise<Category[]> {
-  if (USE_MOCK_DATA) return MOCK_CATEGORIES;
-  return directusList<DCategory>(`/items/categories?${PUB}&sort=name&limit=-1`);
+  const [rows, counts] = await Promise.all([
+    USE_MOCK_DATA
+      ? Promise.resolve(MOCK_CATEGORIES)
+      : directusList<DCategory>(`/items/categories?${PUB}&sort=name&limit=-1`),
+    getArticleCountsByCategory(),
+  ]);
+  return rows.map((c) => ({ ...c, count: counts[c.slug] ?? 0 }));
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  if (USE_MOCK_DATA) return MOCK_CATEGORIES.find((c) => c.slug === slug) ?? null;
-  return directusOne<DCategory>(`/items/categories/${encodeURIComponent(slug)}`);
+  const row = USE_MOCK_DATA
+    ? MOCK_CATEGORIES.find((c) => c.slug === slug) ?? null
+    : await directusOne<DCategory>(`/items/categories/${encodeURIComponent(slug)}`);
+  if (!row) return null;
+  const counts = await getArticleCountsByCategory();
+  return { ...row, count: counts[row.slug] ?? 0 };
 }
 
 // ── Authors ──────────────────────────────────────────────────
@@ -180,6 +203,15 @@ export async function getAllAuthors(): Promise<Author[]> {
   if (USE_MOCK_DATA) return Object.values(MOCK_AUTHORS);
   const rows = await directusList<Row<DAuthor>>(`/items/authors?${PUB}&sort=name&limit=-1`);
   return rows.map(mapAuthor);
+}
+
+// ── Counts ───────────────────────────────────────────────────
+export async function getArticleCount(): Promise<number> {
+  if (USE_MOCK_DATA) return MOCK_ARTICLES.length;
+  const json = await directusFetch<{ data: { count: string | number }[] }>(
+    `/items/articles?aggregate[count]=*&${PUB}`,
+  );
+  return Number(json.data[0]?.count ?? 0);
 }
 
 // ── Glossary ─────────────────────────────────────────────────

@@ -4,7 +4,7 @@ import Script from "next/script";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { breadcrumbsJsonLd, SITE } from "@/lib/seo";
-import { getAllAuthors } from "@/lib/articles";
+import { getAllAuthors, getArticleCount } from "@/lib/articles";
 
 export const metadata: Metadata = {
   title: "Acerca de · Quiénes somos",
@@ -23,16 +23,22 @@ const MANIFESTO = [
   { n: "03", t: "Cero comisiones, cero recetas", d: "No te vamos a vender que en 6 meses estarás retirado. Eso es mentira. Te vamos a decir lo que sí funciona.", c: "bg-sky" },
 ];
 
-const NUMBERS = [
-  { n: "42k", l: "Lectores al mes" },
-  { n: "63",  l: "Artículos" },
-  { n: "7",   l: "Personas escribiendo" },
-  { n: "0",   l: "Productos vendidos", highlight: true },
-];
-
 export default async function AboutPage() {
-  const authors = await getAllAuthors();
+  const [authors, articleCount] = await Promise.all([
+    getAllAuthors(),
+    getArticleCount(),
+  ]);
   const contactEmail = process.env.CONTACT_EMAIL;
+
+  // "Lectores al mes" is a placeholder until analytics is wired up
+  // (Plausible/Umami) — set READERS_PER_MONTH in .env to override.
+  const readers = process.env.READERS_PER_MONTH;
+  const NUMBERS = [
+    ...(readers ? [{ n: readers, l: "Lectores al mes" }] : []),
+    { n: String(articleCount), l: "Artículos" },
+    { n: String(authors.length), l: "Personas escribiendo" },
+  ];
+
   return (
     <>
       <Header />
@@ -75,7 +81,7 @@ export default async function AboutPage() {
             <div className="grid grid-cols-2 gap-5">
               {NUMBERS.map((s) => (
                 <div key={s.l}>
-                  <div className={`font-display text-3xl md:text-4xl font-extrabold tracking-[-0.04em] leading-none ${s.highlight ? "text-mandarina" : ""}`}>
+                  <div className="font-display text-3xl md:text-4xl font-extrabold tracking-[-0.04em] leading-none">
                     {s.n}
                   </div>
                   <div className="text-[11px] opacity-70 mt-1">{s.l}</div>
