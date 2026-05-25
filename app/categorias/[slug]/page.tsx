@@ -29,13 +29,15 @@ export async function generateMetadata(
   const { slug } = await params;
   const cat = await getCategoryBySlug(slug);
   if (!cat) return {};
+  const name = cat.name ?? "Categoría";
+  const blurb = cat.blurb ?? "";
   return {
-    title: `${cat.name} · ${cat.count} artículos`,
-    description: `${cat.blurb}. Artículos sobre ${cat.name.toLowerCase()} explicados sin choros y para principiantes.`,
+    title: `${name} · ${cat.count} artículos`,
+    description: `${blurb}. Artículos sobre ${name.toLowerCase()} explicados sin choros y para principiantes.`,
     alternates: { canonical: `${SITE.url}/categorias/${cat.slug}` },
     openGraph: {
-      title: `${cat.name} · Centavo`,
-      description: cat.blurb,
+      title: `${name} · Centavos`,
+      description: blurb,
       url: `${SITE.url}/categorias/${cat.slug}`,
     },
   };
@@ -51,6 +53,13 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
   const others = allCategories.filter((c) => c.slug !== cat.slug);
   const catIndex = allCategories.findIndex((c) => c.slug === cat.slug);
 
+  const name = cat.name ?? "Categoría";
+  const blurb = cat.blurb ?? "";
+  const count = cat.count ?? 0;
+  // catIndex is -1 if the slug isn't in the listing (e.g. unpublished)
+  const position = catIndex >= 0 ? catIndex + 1 : 1;
+  const total = allCategories.length || 1;
+
   return (
     <>
       <Header />
@@ -60,23 +69,23 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
         <nav aria-label="Breadcrumb" className="px-4 pt-4 text-[11px] text-ink-soft flex items-center gap-1.5">
           <Link href="/" className="hover:text-ink">Inicio</Link>
           <span aria-hidden>›</span>
-          <span className="text-ink">{cat.name}</span>
+          <span className="text-ink">{name}</span>
         </nav>
 
         {/* Header bloque de color */}
         <header className="bg-peach px-6 py-7 md:py-10 mt-3 mx-4 rounded-3xl">
           <div className="text-[11px] font-extrabold tracking-wider text-mandarina-deep uppercase mb-2.5">
-            Categoría · {String(catIndex + 1).padStart(2, "0")}/{allCategories.length}
+            Categoría · {String(position).padStart(2, "0")}/{total}
           </div>
           <h1 className="font-display text-[56px] md:text-[80px] font-extrabold tracking-[-0.05em] leading-[0.9] mb-3">
-            {cat.name}
+            {name}
           </h1>
           <p className="text-[15px] md:text-base text-ink/80 leading-relaxed mb-5">
-            {cat.blurb}. Aprende a manejar el tema desde cero, sin tecnicismos y sin que te quieran vender productos.
+            {blurb ? `${blurb}. ` : ""}Aprende a manejar el tema desde cero, sin tecnicismos y sin que te quieran vender productos.
           </p>
           <div className="flex gap-5 text-[12px] text-ink">
             <div>
-              <div className="font-display text-[22px] font-extrabold tracking-[-0.025em]">{cat.count}</div>
+              <div className="font-display text-[22px] font-extrabold tracking-[-0.025em]">{count}</div>
               <div className="opacity-70">artículos</div>
             </div>
             <div>
@@ -133,23 +142,25 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
         )}
 
         {/* Otras categorías */}
-        <section className="bg-bg px-4 py-7 mt-8">
-          <div className="text-[11px] text-ink-soft font-bold tracking-wider uppercase mb-3 px-1">
-            Otras categorías
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {others.map((c) => (
-              <Link
-                key={c.slug}
-                href={`/categorias/${c.slug}`}
-                className="bg-surface border border-rule rounded-2xl px-4 py-3.5 card-hover"
-              >
-                <div className="font-display text-lg font-extrabold tracking-[-0.025em]">{c.name}</div>
-                <div className="text-[11px] text-ink-soft mt-1">{c.count} artículos</div>
-              </Link>
-            ))}
-          </div>
-        </section>
+        {others.length > 0 && (
+          <section className="bg-bg px-4 py-7 mt-8">
+            <div className="text-[11px] text-ink-soft font-bold tracking-wider uppercase mb-3 px-1">
+              Otras categorías
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {others.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/categorias/${c.slug}`}
+                  className="bg-surface border border-rule rounded-2xl px-4 py-3.5 card-hover"
+                >
+                  <div className="font-display text-lg font-extrabold tracking-[-0.025em]">{c.name ?? "Categoría"}</div>
+                  <div className="text-[11px] text-ink-soft mt-1">{c.count ?? 0} artículos</div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />
@@ -161,7 +172,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           __html: JSON.stringify(
             breadcrumbsJsonLd([
               { name: "Inicio", url: "/" },
-              { name: cat.name, url: `/categorias/${cat.slug}` },
+              { name, url: `/categorias/${cat.slug}` },
             ])
           ),
         }}

@@ -30,6 +30,7 @@ export default async function HomePage() {
   const stories = await getStories();
   const categories = await getAllCategories();
   const [hero, ...rest] = articles;
+  const hasContact = Boolean(process.env.CONTACT_EMAIL);
 
   return (
     <>
@@ -51,8 +52,8 @@ export default async function HomePage() {
         <CategoriesGrid categories={categories} />
         <AboutTeaser />
         <GlossaryTeaser />
-        <NewsletterCTA />
-        <MoreArticlesGrid articles={rest} />
+        {hasContact && <NewsletterCTA />}
+        {rest.length > 0 && <MoreArticlesGrid articles={rest} />}
       </main>
 
       <Footer />
