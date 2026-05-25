@@ -79,6 +79,7 @@ export function ArticleShell({
             width={768}
             height={440}
             className="w-full h-auto rounded-2xl object-cover"
+            unoptimized
             priority
           />
         ) : (

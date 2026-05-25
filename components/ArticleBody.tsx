@@ -41,6 +41,7 @@ export function ArticleBody({ blocks }: { blocks: ArticleBlock[] }) {
                     width={block.image.width ?? 768}
                     height={block.image.height ?? 432}
                     className="w-full h-auto rounded-2xl object-cover"
+                    unoptimized
                   />
                 ) : (
                   <div className="w-full h-56 rounded-2xl bg-sand grid place-items-center text-mandarina-deep text-xs uppercase tracking-wide">
