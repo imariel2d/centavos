@@ -60,8 +60,8 @@ node directus/bootstrap.mjs           # crea schema, relations, perms; escribe D
 node directus/seed.mjs                # carga data/mock.ts a Directus (opcional)
 
 cp .env.example .env.local            # ajusta NEXT_PUBLIC_SITE_URL, CONTACT_EMAIL, etc.
-npm install
-npm run dev                           # http://localhost:3000
+bun install
+bun run dev                           # http://localhost:3000
 ```
 
 Admin de Directus: <http://localhost:8055> (`admin@centavo.mx` / `admin`).
@@ -136,11 +136,11 @@ docker exec centavos-cache redis-cli FLUSHALL
 ## Comandos
 
 ```bash
-npm run dev          # desarrollo (http://localhost:3000)
-npm run build        # producción
-npm start            # servidor de producción
-npm run typecheck    # tsc --noEmit
-npm run lint         # eslint
+bun run dev          # desarrollo (http://localhost:3000)
+bun run build        # producción
+bun start            # servidor de producción
+bun run typecheck    # tsc --noEmit
+bun run lint         # eslint
 
 # Directus
 docker compose up -d                  # levanta el stack

@@ -55,6 +55,18 @@ services:
       CORS_ENABLED: "true"
       CORS_ORIGIN: "true"
 
+      # ── Optional: storage adapter ──────────────────────────
+      # Default is the bind-mounted local volume above. To test S3 parity
+      # locally, export STORAGE_LOCATIONS=s3 + the four S3_* vars in your
+      # shell before `docker compose up`. Leaving them unset keeps the
+      # filesystem behavior.
+      STORAGE_LOCATIONS: "${STORAGE_LOCATIONS:-local}"
+      STORAGE_S3_DRIVER: "s3"
+      STORAGE_S3_KEY:    "${STORAGE_S3_KEY:-}"
+      STORAGE_S3_SECRET: "${STORAGE_S3_SECRET:-}"
+      STORAGE_S3_BUCKET: "${STORAGE_S3_BUCKET:-}"
+      STORAGE_S3_REGION: "${STORAGE_S3_REGION:-}"
+
 volumes:
   db-data:
   directus-uploads:

@@ -55,6 +55,16 @@ services:
       - { key: CORS_ENABLED, scope: RUN_TIME, value: "true" }
       - { key: CORS_ORIGIN,  scope: RUN_TIME, type: SECRET }   # e.g. https://centavo.mx,https://*.vercel.app
 
+      # ── Storage (AWS S3) ───────────────────────────────────
+      # Container filesystem is ephemeral on App Platform — without S3
+      # any uploaded image would disappear on the next deploy/restart.
+      - { key: STORAGE_LOCATIONS,  scope: RUN_TIME, value: "s3" }
+      - { key: STORAGE_S3_DRIVER,  scope: RUN_TIME, value: "s3" }
+      - { key: STORAGE_S3_KEY,     scope: RUN_TIME, type: SECRET }
+      - { key: STORAGE_S3_SECRET,  scope: RUN_TIME, type: SECRET }
+      - { key: STORAGE_S3_BUCKET,  scope: RUN_TIME, type: SECRET }
+      - { key: STORAGE_S3_REGION,  scope: RUN_TIME, type: SECRET }
+
       # ── Defaults Directus expects ──────────────────────────
       - { key: TELEMETRY, scope: RUN_TIME, value: "false" }
 
