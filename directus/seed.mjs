@@ -19,10 +19,11 @@ const mockPath = join(here, "..", "data", "mock.ts");
 async function loadMock() {
   let src = readFileSync(mockPath, "utf8");
   src = src.replace(/^import[^;]+;/gm, "");
-  src = src.replace(/:\s*(Article|Author|Category|GlossaryTerm|Story)\[\]/g, "");
+  src = src.replace(/:\s*(Article|Author|Category|GlossaryTerm|HomePageData|Story)\[\]/g, "");
   src = src.replace(/:\s*Record<string,\s*Author>/g, "");
+  src = src.replace(/:\s*HomePageData/g, "");
   src = src.replace(/export const/g, "const");
-  src += "\nreturn { CATEGORIES, AUTHORS, STORIES, GLOSSARY, ARTICLES };";
+  src += "\nreturn { CATEGORIES, AUTHORS, STORIES, GLOSSARY, ARTICLES, HOME_PAGE };";
   // eslint-disable-next-line no-new-func
   return new Function(src)();
 }
@@ -141,6 +142,33 @@ async function run() {
       status: "published",
     });
   }
+
+  // ── Home Page (singleton with M2M article relations) ────────
+  // Directus manages M2M junction rows through the parent item's
+  // PATCH endpoint — writing directly to junction tables leaves the
+  // FK null. So we PATCH the singleton with all three M2M arrays.
+  console.log("home_page");
+  const hp = mock.HOME_PAGE;
+
+  await api(`/items/home_page`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      starter_steps: hp.starterSteps.map((s, i) => ({
+        articles_slug: s.article.slug,
+        sort: i + 1,
+        color: s.color,
+      })),
+      trending: hp.trending.map((a, i) => ({
+        articles_slug: a.slug,
+        sort: i + 1,
+      })),
+      more_articles: hp.moreArticles.map((a, i) => ({
+        articles_slug: a.slug,
+        sort: i + 1,
+      })),
+    }),
+  });
+  console.log("  ~ home_page (starter_steps, trending, more_articles)");
 
   console.log("\ndone.");
 }

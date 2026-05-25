@@ -12,6 +12,7 @@ import {
   AUTHORS as MOCK_AUTHORS,
   CATEGORIES as MOCK_CATEGORIES,
   GLOSSARY as MOCK_GLOSSARY,
+  HOME_PAGE as MOCK_HOME_PAGE,
   STORIES as MOCK_STORIES,
 } from "@/data/mock";
 import type {
@@ -21,6 +22,8 @@ import type {
   Category,
   CategorySlug,
   GlossaryTerm,
+  HomePageData,
+  HomeStarterStep,
   ImageRef,
   Story,
 } from "@/types";
@@ -28,10 +31,10 @@ import type {
 // ── Directus row shapes (snake_case) ─────────────────────────
 type Row<T> = T & { status?: string };
 
-interface DCategory  { slug: CategorySlug; name: string; blurb: string; count: number }
-interface DAuthor    { slug: string; name: string; role: string; avatar_color?: string | null }
-interface DStory     { id: number; name: string; role: string; quote: string }
-interface DGlossary  { slug: string; term: string; category: CategorySlug; definition: string; eli5: string }
+interface DCategory    { slug: CategorySlug; name: string; blurb: string; count: number }
+interface DAuthor      { slug: string; name: string; role: string; avatar_color?: string | null }
+interface DStory       { id: number; name: string; role: string; quote: string }
+interface DGlossary    { slug: string; term: string; category: CategorySlug; definition: string; eli5: string }
 interface DArticle {
   slug: string;
   title: string;
@@ -239,4 +242,69 @@ export async function getStories(): Promise<Story[]> {
   if (USE_MOCK_DATA) return MOCK_STORIES;
   const rows = await directusList<DStory>(`/items/stories?${PUB}&limit=-1`);
   return rows.map(({ name, role, quote }) => ({ name, role, quote }));
+}
+
+// ── Home Page (singleton with M2M article relations) ────────
+// Directus junction rows arrive as:
+//   { articles_slug: DArticle, sort: number, color?: string }
+interface DJunctionRow {
+  articles_slug: Row<DArticle> | string | null;
+  sort?: number;
+  color?: "peach" | "sand" | "sky";
+}
+
+interface DHomePage {
+  starter_steps?: DJunctionRow[];
+  trending?: DJunctionRow[];
+  more_articles?: DJunctionRow[];
+}
+
+const HOME_FIELDS = [
+  "starter_steps.sort",
+  "starter_steps.color",
+  "starter_steps.articles_slug.*",
+  "starter_steps.articles_slug.author.*",
+  "trending.sort",
+  "trending.articles_slug.*",
+  "trending.articles_slug.author.*",
+  "more_articles.sort",
+  "more_articles.articles_slug.*",
+  "more_articles.articles_slug.author.*",
+].join(",");
+
+function junctionToArticles(rows: DJunctionRow[] | undefined): Article[] {
+  if (!rows) return [];
+  return rows
+    .filter((r): r is DJunctionRow & { articles_slug: Row<DArticle> } =>
+      r.articles_slug != null && typeof r.articles_slug === "object")
+    .map((r) => mapArticle(r.articles_slug));
+}
+
+function junctionToStarters(rows: DJunctionRow[] | undefined): HomeStarterStep[] {
+  if (!rows) return [];
+  return rows
+    .filter((r): r is DJunctionRow & { articles_slug: Row<DArticle> } =>
+      r.articles_slug != null && typeof r.articles_slug === "object")
+    .map((r) => ({
+      article: mapArticle(r.articles_slug),
+      color: r.color ?? "peach",
+    }));
+}
+
+export async function getHomePage(): Promise<HomePageData> {
+  if (USE_MOCK_DATA) return MOCK_HOME_PAGE;
+  try {
+    const row = await directusOne<DHomePage>(
+      `/items/home_page?fields=${HOME_FIELDS}`,
+    );
+    if (!row) return { starterSteps: [], trending: [], moreArticles: [] };
+    return {
+      starterSteps: junctionToStarters(row.starter_steps),
+      trending: junctionToArticles(row.trending),
+      moreArticles: junctionToArticles(row.more_articles),
+    };
+  } catch {
+    // Collection may not exist yet — gracefully degrade.
+    return { starterSteps: [], trending: [], moreArticles: [] };
+  }
 }

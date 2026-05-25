@@ -17,18 +17,21 @@ import { NewsletterCTA } from "@/components/home/NewsletterCTA";
 import { MoreArticlesGrid } from "@/components/home/MoreArticlesGrid";
 import {
   getAllCategories,
+  getHomePage,
   getLatestArticles,
   getStories,
-  getTrendingArticles,
 } from "@/lib/articles";
 
 export const revalidate = 3600; // ISR: revalida cada hora
 
 export default async function HomePage() {
-  const articles = await getLatestArticles(6);
-  const trending = await getTrendingArticles(5);
-  const stories = await getStories();
-  const categories = await getAllCategories();
+  const [articles, homePage, stories, categories] = await Promise.all([
+    getLatestArticles(6),
+    getHomePage(),
+    getStories(),
+    getAllCategories(),
+  ]);
+
   const [hero, ...rest] = articles;
   const hasContact = Boolean(process.env.CONTACT_EMAIL);
 
@@ -42,18 +45,18 @@ export default async function HomePage() {
         <div className="mx-auto max-w-screen-md">
           <CategoryStrip />
         </div>
-        <EmpiezaPorAqui />
+        <EmpiezaPorAqui steps={homePage.starterSteps} />
         <Manifesto />
         <LoNuevo articles={rest} />
         <Eli5Spotlight />
         <CalculatorPreview />
-        <TrendingList articles={trending} />
-        <StoriesCarousel stories={stories} />
-        <CategoriesGrid categories={categories} />
+        {homePage.trending.length > 0 && <TrendingList articles={homePage.trending} />}
+        {stories.length > 0 && <StoriesCarousel stories={stories} />}
+        {categories.length > 0 && <CategoriesGrid categories={categories} />}
         <AboutTeaser />
         <GlossaryTeaser />
         {hasContact && <NewsletterCTA />}
-        {rest.length > 0 && <MoreArticlesGrid articles={rest} />}
+        {homePage.moreArticles.length > 0 && <MoreArticlesGrid articles={homePage.moreArticles} />}
       </main>
 
       <Footer />

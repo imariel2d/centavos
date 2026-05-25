@@ -1,4 +1,4 @@
-import type { Article, Author, Category, GlossaryTerm, Story } from "@/types";
+import type { Article, Author, Category, GlossaryTerm, HomePageData, Story } from "@/types";
 
 // ──────────────────────────────────────────────────────────────
 // Datos de ejemplo. Cuando conectes el CMS, esto desaparece —
@@ -158,3 +158,16 @@ export const ARTICLES: Article[] = [
     ],
   },
 ];
+
+// ──────────────────────────────────────────────────────────────
+// Home Page — curated sections (singleton in Directus)
+// ──────────────────────────────────────────────────────────────
+export const HOME_PAGE: HomePageData = {
+  starterSteps: [
+    { article: ARTICLES[3], color: "peach" }, // ahorrar-ganando-15000
+    { article: ARTICLES[5], color: "sand" },  // buro-de-credito-sin-miedo
+    { article: ARTICLES[0], color: "sky" },   // como-cambiar-afore-5-minutos
+  ],
+  trending: [ARTICLES[0], ARTICLES[1], ARTICLES[2], ARTICLES[3], ARTICLES[4]],
+  moreArticles: [ARTICLES[1], ARTICLES[2], ARTICLES[3], ARTICLES[4], ARTICLES[5]],
+};

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SectionHead } from "@/components/SectionHead";
 import { categoryName } from "@/lib/format";
 import type { Article } from "@/types";
@@ -6,6 +7,8 @@ import type { Article } from "@/types";
 const TILE_BG = ["var(--color-peach)", "var(--color-sand)", "var(--color-sky)"];
 
 export function LoNuevo({ articles }: { articles: Article[] }) {
+  if (articles.length === 0) return null;
+
   return (
     <section className="mx-auto max-w-screen-md px-5 pt-10 md:pt-14">
       <SectionHead kicker="Esta semana" title="Lo nuevo en Centavos" />
@@ -14,13 +17,24 @@ export function LoNuevo({ articles }: { articles: Article[] }) {
           <Link
             key={a.slug}
             href={`/articulos/${a.slug}`}
-            className={`flex gap-3.5 items-start py-4 ${i < 2 ? "border-b border-rule" : ""}`}
+            className={`flex gap-3.5 items-start py-4 ${i < Math.min(articles.length, 3) - 1 ? "border-b border-rule" : ""}`}
           >
-            <div
-              className="w-16 h-16 rounded-xl flex-shrink-0"
-              style={{ background: TILE_BG[i] }}
-              aria-hidden
-            />
+            {a.heroImage.url ? (
+              <Image
+                src={a.heroImage.url}
+                alt={a.heroImage.alt}
+                width={64}
+                height={64}
+                className="w-16 h-16 rounded-xl flex-shrink-0 object-cover"
+                unoptimized
+              />
+            ) : (
+              <div
+                className="w-16 h-16 rounded-xl flex-shrink-0"
+                style={{ background: TILE_BG[i] }}
+                aria-hidden
+              />
+            )}
             <div className="flex-1">
               <div className="text-[10px] text-mandarina-deep font-extrabold tracking-wider uppercase mb-1">
                 {categoryName(a.category)}

@@ -66,3 +66,16 @@ export interface Story {
   role: string;
   quote: string;
 }
+
+/** A single "Empieza por aquí" entry — an article + display color. */
+export interface HomeStarterStep {
+  article: Article;
+  color: "peach" | "sand" | "sky";
+}
+
+/** Curated content for the Home Page singleton in Directus. */
+export interface HomePageData {
+  starterSteps: HomeStarterStep[];
+  trending: Article[];
+  moreArticles: Article[];
+}

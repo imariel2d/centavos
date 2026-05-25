@@ -205,21 +205,127 @@ async function run() {
     },
   });
 
+  // ── Drop legacy starter_steps (replaced by home_page M2M) ──
+  if (await exists("/collections/starter_steps")) {
+    await api("/collections/starter_steps", { method: "DELETE" });
+    console.log("- dropped starter_steps (replaced by home_page M2M)");
+  }
+
+  // ── home_page (singleton) ─────────────────────────────────
+  await createSingleton("home_page", { icon: "home", sort: 6 });
+
+  // Junction: home_page ←→ articles (starter steps)
+  await createJunction("home_page_starter_steps");
+  await addField("home_page_starter_steps", "home_page_id",  { type: "integer", meta: { hidden: true }, schema: { foreign_key_table: "home_page", foreign_key_column: "id" } });
+  await addField("home_page_starter_steps", "articles_slug", { type: "string",  meta: { hidden: true }, schema: { foreign_key_table: "articles",  foreign_key_column: "slug" } });
+  await addField("home_page_starter_steps", "sort",          { type: "integer", meta: { hidden: true } });
+  await addField("home_page_starter_steps", "color", {
+    type: "string",
+    meta: {
+      interface: "select-dropdown",
+      options: { choices: [
+        { text: "Peach", value: "peach" },
+        { text: "Sand",  value: "sand" },
+        { text: "Sky",   value: "sky" },
+      ]},
+      width: "half",
+    },
+    schema: { default_value: "peach", is_nullable: false },
+  });
+
+  // Junction: home_page ←→ articles (trending)
+  await createJunction("home_page_trending");
+  await addField("home_page_trending", "home_page_id",  { type: "integer", meta: { hidden: true }, schema: { foreign_key_table: "home_page", foreign_key_column: "id" } });
+  await addField("home_page_trending", "articles_slug", { type: "string",  meta: { hidden: true }, schema: { foreign_key_table: "articles",  foreign_key_column: "slug" } });
+  await addField("home_page_trending", "sort",          { type: "integer", meta: { hidden: true } });
+
+  // Junction: home_page ←→ articles (more articles)
+  await createJunction("home_page_more_articles");
+  await addField("home_page_more_articles", "home_page_id",  { type: "integer", meta: { hidden: true }, schema: { foreign_key_table: "home_page", foreign_key_column: "id" } });
+  await addField("home_page_more_articles", "articles_slug", { type: "string",  meta: { hidden: true }, schema: { foreign_key_table: "articles",  foreign_key_column: "slug" } });
+  await addField("home_page_more_articles", "sort",          { type: "integer", meta: { hidden: true } });
+
+  // M2M alias fields on home_page
+  await addField("home_page", "starter_steps",  { type: "alias", meta: { interface: "list-m2m", special: ["m2m"], options: { template: "{{articles_slug.title}}", junctionFieldsWrite: ["sort", "color"] } } });
+  await addField("home_page", "trending",       { type: "alias", meta: { interface: "list-m2m", special: ["m2m"], options: { template: "{{articles_slug.title}}" } } });
+  await addField("home_page", "more_articles",  { type: "alias", meta: { interface: "list-m2m", special: ["m2m"], options: { template: "{{articles_slug.title}}" } } });
+
   // Register M2O relations so `?fields=author.*` joins work
   await ensureRelation({ collection: "glossary_terms", field: "category", related: "categories" });
   await ensureRelation({ collection: "articles",       field: "category", related: "categories" });
   await ensureRelation({ collection: "articles",       field: "author",   related: "authors" });
   await ensureRelation({ collection: "articles",       field: "hero_image", related: "directus_files" });
 
+  // Register M2M relations for home_page
+  // starter_steps
+  await ensureRelation({ collection: "home_page_starter_steps", field: "home_page_id",  related: "home_page",
+    meta: { one_field: "starter_steps", sort_field: "sort", junction_field: "articles_slug" } });
+  await ensureRelation({ collection: "home_page_starter_steps", field: "articles_slug", related: "articles",
+    meta: { one_field: null, junction_field: "home_page_id" } });
+  // trending
+  await ensureRelation({ collection: "home_page_trending", field: "home_page_id",  related: "home_page",
+    meta: { one_field: "trending", sort_field: "sort", junction_field: "articles_slug" } });
+  await ensureRelation({ collection: "home_page_trending", field: "articles_slug", related: "articles",
+    meta: { one_field: null, junction_field: "home_page_id" } });
+  // more_articles
+  await ensureRelation({ collection: "home_page_more_articles", field: "home_page_id",  related: "home_page",
+    meta: { one_field: "more_articles", sort_field: "sort", junction_field: "articles_slug" } });
+  await ensureRelation({ collection: "home_page_more_articles", field: "articles_slug", related: "articles",
+    meta: { one_field: null, junction_field: "home_page_id" } });
+
   // Lock down: revoke public perms, create a read-only Web role with a static token
-  await revokePublicRead(["categories", "authors", "stories", "glossary_terms", "articles", "directus_files"]);
-  const newToken = await ensureWebUser(["categories", "authors", "stories", "glossary_terms", "articles", "directus_files"]);
+  const allCollections = [
+    "categories", "authors", "stories", "glossary_terms", "articles",
+    "home_page", "home_page_starter_steps", "home_page_trending", "home_page_more_articles",
+    "directus_files",
+  ];
+  await revokePublicRead(allCollections);
+  const newToken = await ensureWebUser(allCollections);
   if (newToken) writeTokenToEnv(newToken);
 
   console.log("\ndone. open http://localhost:8055 (admin@centavo.mx / admin)");
 }
 
-async function ensureRelation({ collection, field, related }) {
+async function createSingleton(name, opts = {}) {
+  if (await exists(`/collections/${name}`)) {
+    console.log(`= collection ${name} (singleton)`);
+    return;
+  }
+  const { icon, sort } = opts;
+  await api("/collections", {
+    method: "POST",
+    body: JSON.stringify({
+      collection: name,
+      meta: { singleton: true, icon, sort },
+      schema: { name },
+      fields: [
+        { field: "id", type: "integer", meta: { hidden: true, interface: "input", readonly: true }, schema: { is_primary_key: true, has_auto_increment: true } },
+      ],
+    }),
+  });
+  console.log(`+ collection ${name} (singleton)`);
+}
+
+async function createJunction(name) {
+  if (await exists(`/collections/${name}`)) {
+    console.log(`  = junction ${name}`);
+    return;
+  }
+  await api("/collections", {
+    method: "POST",
+    body: JSON.stringify({
+      collection: name,
+      meta: { hidden: true, icon: "import_export" },
+      schema: { name },
+      fields: [
+        { field: "id", type: "integer", meta: { hidden: true, interface: "input", readonly: true }, schema: { is_primary_key: true, has_auto_increment: true } },
+      ],
+    }),
+  });
+  console.log(`  + junction ${name}`);
+}
+
+async function ensureRelation({ collection, field, related, meta: extraMeta }) {
   const existing = (await api(`/relations/${collection}/${field}`).catch(() => null))?.data;
   if (existing) {
     console.log(`  = relation ${collection}.${field} → ${related}`);
@@ -231,7 +337,7 @@ async function ensureRelation({ collection, field, related }) {
       collection,
       field,
       related_collection: related,
-      meta: { sort_field: null },
+      meta: { sort_field: null, ...extraMeta },
       schema: { on_delete: "SET NULL" },
     }),
   });
