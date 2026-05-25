@@ -354,6 +354,17 @@ async function ensureWebUser(collections) {
 }
 
 function writeTokenToEnv(token) {
+  // When pointed at a remote Directus (prod deploy), don't clobber the local
+  // .env.local with a token meant for another environment. Just print it so
+  // the operator can paste it into Vercel / their secret manager.
+  const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(URL);
+  if (!isLocal) {
+    console.log("\n──────── Web user token (paste into your host's env) ────────");
+    console.log(`DIRECTUS_TOKEN=${token}`);
+    console.log("──────────────────────────────────────────────────────────────");
+    return;
+  }
+
   const line = `DIRECTUS_TOKEN=${token}`;
   if (!existsSync(envPath)) {
     writeFileSync(envPath, `${line}\n`, "utf8");

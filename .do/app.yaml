@@ -1,0 +1,66 @@
+# DigitalOcean App Platform spec for the Centavos Directus backend.
+#
+# Deploy:
+#   1. Push this repo to GitHub.
+#   2. DO dashboard → Apps → Create App → "Import from a Catalog or Repo"
+#      → pick `.do/app.yaml` as the spec.
+#   3. In the wizard, set every `SECRET` env var below (DO marks the keys
+#      with `type: SECRET` so they need values you supply at create time).
+#   4. After it boots, point `bootstrap.mjs` at the prod URL (see below)
+#      and copy the printed DIRECTUS_TOKEN into Vercel.
+#
+# Minimal hosting cost (basic-xxs + dev DB):  ~$12/mo.
+# Add managed Redis ($15) and DO Spaces ($5) when you outgrow this.
+name: centavos-cms
+region: nyc
+
+services:
+  - name: directus
+    image:
+      registry_type: DOCKER_HUB
+      registry: directus
+      repository: directus
+      tag: "11.5.1"
+    http_port: 8055
+    instance_count: 1
+    instance_size_slug: basic-xxs   # 512 MB / 1 vCPU
+    health_check:
+      http_path: /server/health
+      initial_delay_seconds: 30
+      period_seconds: 30
+    envs:
+      # ── Identity / secrets ─────────────────────────────────
+      - { key: KEY,            scope: RUN_TIME, type: SECRET }
+      - { key: SECRET,         scope: RUN_TIME, type: SECRET }
+      - { key: ADMIN_EMAIL,    scope: RUN_TIME, type: SECRET }
+      - { key: ADMIN_PASSWORD, scope: RUN_TIME, type: SECRET }
+
+      # ── DB (auto-injected by the managed database below) ───
+      - { key: DB_CLIENT,   scope: RUN_TIME, value: "pg" }
+      - { key: DB_HOST,     scope: RUN_TIME, value: "${db.HOSTNAME}" }
+      - { key: DB_PORT,     scope: RUN_TIME, value: "${db.PORT}" }
+      - { key: DB_DATABASE, scope: RUN_TIME, value: "${db.DATABASE}" }
+      - { key: DB_USER,     scope: RUN_TIME, value: "${db.USERNAME}" }
+      - { key: DB_PASSWORD, scope: RUN_TIME, value: "${db.PASSWORD}" }
+      - { key: DB_SSL__REJECT_UNAUTHORIZED, scope: RUN_TIME, value: "false" }
+
+      # ── Cache (in-process — swap to Redis when traffic grows)
+      - { key: CACHE_ENABLED,    scope: RUN_TIME, value: "true" }
+      - { key: CACHE_STORE,      scope: RUN_TIME, value: "memory" }
+      - { key: CACHE_AUTO_PURGE, scope: RUN_TIME, value: "true" }
+
+      # ── Public URL / CORS ──────────────────────────────────
+      # APP_URL is injected by App Platform with the app's https URL.
+      - { key: PUBLIC_URL,  scope: RUN_TIME, value: "${APP_URL}" }
+      - { key: CORS_ENABLED, scope: RUN_TIME, value: "true" }
+      - { key: CORS_ORIGIN,  scope: RUN_TIME, type: SECRET }   # e.g. https://centavo.mx,https://*.vercel.app
+
+      # ── Defaults Directus expects ──────────────────────────
+      - { key: TELEMETRY, scope: RUN_TIME, value: "false" }
+
+databases:
+  - name: db
+    engine: PG
+    version: "16"
+    production: false       # "dev database" tier (~$7/mo); flip to true for HA
+    cluster_name: centavos-pg
