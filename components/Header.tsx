@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
+import { MobileMenu } from "./MobileMenu";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-30 bg-bg/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-30 bg-bg/95 backdrop-blur-sm relative">
       <div className="mx-auto max-w-screen-lg flex items-center justify-between px-4 py-3">
         <Logo size={26} />
         <nav className="hidden md:flex items-center gap-7 text-sm font-semibold">
@@ -24,15 +25,7 @@ export function Header() {
               <circle cx="9" cy="9" r="6.5" /><path d="M14 14l4 4" strokeLinecap="round" />
             </svg>
           </Link>
-          <button
-            aria-label="Abrir menú"
-            className="md:hidden w-10 h-10 rounded-full bg-ink grid place-items-center"
-          >
-            <span className="flex flex-col gap-[5px]">
-              <span className="block w-4 h-[2px] bg-bg rounded-full" />
-              <span className="block w-4 h-[2px] bg-bg rounded-full" />
-            </span>
-          </button>
+          <MobileMenu />
         </div>
       </div>
     </header>
