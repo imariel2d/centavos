@@ -3,7 +3,7 @@ import Script from "next/script";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Chip } from "@/components/Chip";
-import { GLOSSARY, CATEGORIES } from "@/data/mock";
+import { getAllCategories, getAllGlossaryTerms } from "@/lib/articles";
 import { definedTermSetJsonLd, breadcrumbsJsonLd, SITE } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -19,8 +19,12 @@ export const metadata: Metadata = {
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-export default function GlossaryPage() {
-  const terms = [...GLOSSARY].sort((a, b) => a.term.localeCompare(b.term));
+export default async function GlossaryPage() {
+  const [glossary, categories] = await Promise.all([
+    getAllGlossaryTerms(),
+    getAllCategories(),
+  ]);
+  const terms = [...glossary].sort((a, b) => a.term.localeCompare(b.term));
   const presentLetters = new Set(terms.map((t) => t.term[0].toUpperCase()));
 
   return (
@@ -80,7 +84,7 @@ export default function GlossaryPage() {
         <section className="px-4 pb-8">
           <ul className="space-y-2.5">
             {terms.map((t) => {
-              const cat = CATEGORIES.find((c) => c.slug === t.category);
+              const cat = categories.find((c) => c.slug === t.category);
               return (
                 <li key={t.slug} id={t.slug} className="scroll-mt-20">
                   <a id={`letter-${t.term[0].toUpperCase()}`} className="absolute" aria-hidden />
@@ -115,7 +119,7 @@ export default function GlossaryPage() {
       <Script
         id="ld-glossary"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSetJsonLd(GLOSSARY)) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSetJsonLd(glossary)) }}
       />
       <Script
         id="ld-glossary-breadcrumbs"

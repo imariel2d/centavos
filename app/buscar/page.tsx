@@ -6,10 +6,10 @@ import { CategoryStrip } from "@/components/CategoryStrip";
 import { ArticleCard } from "@/components/ArticleCard";
 import {
   getAllCategories,
+  getAllGlossaryTerms,
   getTrendingArticles,
   searchArticles,
 } from "@/lib/articles";
-import { GLOSSARY } from "@/data/mock";
 import { categoryName } from "@/lib/format";
 import { SITE } from "@/lib/seo";
 
@@ -31,14 +31,15 @@ export default async function SearchPage({
   const query = q.trim();
   const hasQuery = query.length > 0;
 
-  const [results, categories, trending] = await Promise.all([
+  const [results, categories, trending, glossary] = await Promise.all([
     hasQuery ? searchArticles(query) : Promise.resolve([]),
     getAllCategories(),
     getTrendingArticles(4),
+    hasQuery ? getAllGlossaryTerms() : Promise.resolve([]),
   ]);
 
   const glossaryHit = hasQuery
-    ? GLOSSARY.find((g) => g.term.toLowerCase().includes(query.toLowerCase()))
+    ? glossary.find((g) => g.term.toLowerCase().includes(query.toLowerCase()))
     : null;
 
   return (

@@ -1,15 +1,11 @@
 import Link from "next/link";
 import type { Article } from "@/types";
 import { Chip } from "./Chip";
-import { CATEGORIES } from "@/data/mock";
+import { categoryName } from "@/lib/format";
 
 type Variant = "default" | "compact" | "feature";
 
 const ACCENTS = ["bg-peach", "bg-sand", "bg-sky", "bg-mandarina"] as const;
-
-function categoryName(slug: Article["category"]) {
-  return CATEGORIES.find((c) => c.slug === slug)?.name ?? slug;
-}
 
 export function ArticleCard({
   article,

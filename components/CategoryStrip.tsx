@@ -1,14 +1,15 @@
 import Link from "next/link";
-import { CATEGORIES } from "@/data/mock";
+import { getAllCategories } from "@/lib/articles";
 import type { CategorySlug } from "@/types";
 
-export function CategoryStrip({ active }: { active?: CategorySlug }) {
+export async function CategoryStrip({ active }: { active?: CategorySlug }) {
+  const categories = await getAllCategories();
   return (
     <nav
       aria-label="Categorías"
       className="flex gap-2 overflow-x-auto no-scrollbar px-4 -mx-4 pb-1"
     >
-      {CATEGORIES.map((c) => {
+      {categories.map((c) => {
         const isActive = c.slug === active;
         return (
           <Link

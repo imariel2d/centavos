@@ -4,7 +4,7 @@ import Script from "next/script";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { breadcrumbsJsonLd, SITE } from "@/lib/seo";
-import { AUTHORS } from "@/data/mock";
+import { getAllAuthors } from "@/lib/articles";
 
 export const metadata: Metadata = {
   title: "Acerca de · Quiénes somos",
@@ -30,7 +30,8 @@ const NUMBERS = [
   { n: "0",   l: "Productos vendidos", highlight: true },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const authors = await getAllAuthors();
   return (
     <>
       <Header />
@@ -87,7 +88,7 @@ export default function AboutPage() {
         <section id="equipo" className="px-4 pt-8 scroll-mt-20">
           <h2 className="font-display text-lg font-extrabold tracking-[-0.018em] mb-3 px-1">El equipo</h2>
           <ul className="divide-y divide-rule">
-            {Object.values(AUTHORS).map((p) => (
+            {authors.map((p) => (
               <li key={p.slug}>
                 <Link href={`#`} className="flex gap-3.5 items-center py-3.5 px-1">
                   <div
