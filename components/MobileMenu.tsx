@@ -38,7 +38,7 @@ export function MobileMenu() {
       </button>
 
       {open && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-bg border-b border-rule shadow-lg z-40">
+        <div className="md:hidden fixed top-[56px] inset-x-0 bg-bg border-b border-rule shadow-lg z-40">
           <nav className="flex flex-col px-6 py-4 gap-1">
             {NAV_LINKS.map((link) => (
               <Link
