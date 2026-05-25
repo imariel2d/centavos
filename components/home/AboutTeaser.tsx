@@ -22,7 +22,7 @@ export function AboutTeaser() {
           </div>
         </div>
         <p className="text-sm leading-relaxed mb-3">
-          Somos un equipo de 7 escribiendo desde CDMX, Monterrey y Mérida. Educadores financieros, periodistas, y un par de exhipotecarios arrepentidos.
+          Somos un equipo de gente apacionada por las finanzas y queremos enseñarte lo que nadie nos enseñó.
         </p>
         <Link href="/nosotros" className="text-[12px] text-mandarina-deep font-bold">
           Conoce al equipo →
