@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Chip } from "@/components/Chip";
 import { ImgPlaceholder } from "@/components/ImgPlaceholder";
@@ -8,7 +9,18 @@ export function FeaturedHero({ article }: { article: Article }) {
   return (
     <section className="mx-auto max-w-screen-md px-4 pb-7">
       <Link href={`/articulos/${article.slug}`} className="block bg-mandarina text-bg rounded-3xl overflow-hidden card-hover">
-        <ImgPlaceholder label={`foto editorial · ${categoryName(article.category)}`} height={200} bg="var(--color-mandarina-deep)" fg="var(--color-peach)" />
+        {article.heroImage.url ? (
+          <Image
+            src={article.heroImage.url}
+            alt={article.heroImage.alt}
+            width={800}
+            height={400}
+            className="w-full h-[200px] object-cover"
+            unoptimized
+          />
+        ) : (
+          <ImgPlaceholder label={`foto editorial · ${categoryName(article.category)}`} height={200} bg="var(--color-mandarina-deep)" fg="var(--color-peach)" />
+        )}
         <div className="px-6 pt-5 pb-7">
           <Chip bg="var(--color-ink)" fg="var(--color-bg)" size="md">
             ⭐ Destacado · {categoryName(article.category)}
