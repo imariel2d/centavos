@@ -54,7 +54,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 pt-5 border-t border-bg/10 text-[10px] text-bg/50 tracking-wide flex flex-wrap items-center gap-x-4 gap-y-1">
-          <span>© {new Date().getFullYear()} Centavo</span>
+          <span>© {new Date().getFullYear()} Centavos</span>
           <Link href="/privacidad" className="hover:text-bg">Privacidad</Link>
           <Link href="/terminos" className="hover:text-bg">Términos</Link>
         </div>
