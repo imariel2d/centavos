@@ -5,6 +5,7 @@ import { Chip } from "./Chip";
 import { Eli5Toggle } from "./Eli5Toggle";
 import { ArticleBody } from "./ArticleBody";
 import { ImgPlaceholder } from "./ImgPlaceholder";
+import { ShareButtons } from "./ShareButtons";
 import Image from "next/image";
 import type { ArticleBlock } from "@/types";
 
@@ -102,6 +103,11 @@ export function ArticleShell({
       <article className="pt-6">
         <ArticleBody blocks={blocks} />
       </article>
+
+      {/* Share */}
+      <div className="px-5 pt-6 pb-2">
+        <ShareButtons title={title} slug={slug} />
+      </div>
     </>
   );
 }

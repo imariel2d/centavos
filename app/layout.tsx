@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
     default: "Centavos · Finanzas sin sustos para la banda",
-    template: "%s · Centavo",
+    template: "%s · Centavos",
   },
   description:
     "Blog financiero mexicano. Le ayudamos a la banda joven a perderle el miedo a la lana. Sin choros, sin tecnicismos.",
@@ -45,9 +45,9 @@ export const metadata: Metadata = {
     "PPR", "Buró de Crédito", "tarjeta de crédito", "inversión",
     "educación financiera", "finanzas para jóvenes",
   ],
-  authors: [{ name: "Centavo", url: SITE.url }],
-  creator: "Centavo",
-  publisher: "Centavo",
+  authors: [{ name: "Centavos", url: SITE.url }],
+  creator: "Centavos",
+  publisher: "Centavos",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     title: "Centavos · Finanzas sin sustos para la banda",
     description: "Blog financiero mexicano para jóvenes que apenas empiezan con la lana.",
-    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "Centavo" }],
+    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "Centavos" }],
   },
   twitter: {
     card: "summary_large_image",

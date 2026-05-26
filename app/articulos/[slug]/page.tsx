@@ -48,8 +48,8 @@ export async function generateMetadata(
       authors: [article.author.name],
       section: categoryName(article.category),
       images: article.heroImage.url
-        ? [{ url: article.heroImage.url, alt: article.heroImage.alt }]
-        : [{ url: "/og-default.png", width: 1200, height: 630, alt: article.title }],
+        ? [{ url: `${SITE.url}${article.heroImage.url}`, alt: article.heroImage.alt }]
+        : [{ url: `${SITE.url}/og-default.png`, width: 1200, height: 630, alt: article.title }],
     },
     twitter: {
       card: "summary_large_image",

@@ -3,8 +3,8 @@
 
 import type { Article, GlossaryTerm } from "@/types";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://centavo.mx";
-const SITE_NAME = "Centavo";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://centavos.mx";
+const SITE_NAME = "Centavos";
 
 export function organizationJsonLd() {
   return {
