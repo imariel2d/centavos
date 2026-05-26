@@ -7,7 +7,7 @@ export async function CategoryStrip({ active }: { active?: CategorySlug }) {
   return (
     <nav
       aria-label="Categorías"
-      className="flex gap-2 overflow-x-auto no-scrollbar px-4 -mx-4 pb-1"
+      className="flex gap-2 overflow-x-auto no-scrollbar px-5 pb-1"
     >
       {categories.map((c) => {
         const isActive = c.slug === active;
