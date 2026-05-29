@@ -3,7 +3,7 @@
   "name": "Artículos · Generador Diario (9 AM PT)",
   "icon": "auto_awesome",
   "color": "#d6332b",
-  "description": "Generates one draft article every day at 9 AM Pacific Time (17:00 UTC, PST-anchored — drifts to 10 AM during PDT, same convention as the weekly digest). Calls /api/articles/generate on centavos.mx with the x-cron-article header and an empty body; Claude picks both the topic and the author per the rules in the system prompt (no client-side rotation). The endpoint stamps the article with the server's current date, so the draft always reflects \"today\". The returned object is inserted into the `articles` collection as `status=draft` for the editor to review before publishing.",
+  "description": "Generates one draft article every day at 9 AM Pacific Time (17:00 UTC, PST-anchored — drifts to 10 AM during PDT, same convention as the weekly digest). Calls /api/articles/generate on centavos.mx with the x-cron-article header and an empty body; the endpoint handles topic picking, generation via Claude Opus 4.8, and inserting the draft row into the `articles` collection. This flow is just the cron trigger + HTTP call — see lib/claude.ts + app/api/articles/generate/route.ts in centavo-nextjs for the actual work.",
   "status": "active",
   "trigger": "schedule",
   "accountability": "all",
@@ -14,7 +14,7 @@
   "operations": [
     {
       "id": "op-generate-article-000-000000000002",
-      "name": "Generate article via Claude",
+      "name": "Generate + save article via Claude",
       "key": "generate_article",
       "type": "request",
       "position_x": 3,
@@ -27,35 +27,6 @@
           { "header": "x-cron-article",  "value": "{{$env.ARTICLE_GENERATOR_SECRET}}" }
         ],
         "body": "{}"
-      },
-      "resolve": "op-prepare-payload-0000-000000000003",
-      "reject": null,
-      "flow": "65866729-8338-480f-9e68-22dfa27fd99b"
-    },
-    {
-      "id": "op-prepare-payload-0000-000000000003",
-      "name": "Map article → Directus shape",
-      "key": "prepare_payload",
-      "type": "exec",
-      "position_x": 19,
-      "position_y": 1,
-      "options": {
-        "code": "module.exports = async function(data) {\n  // Directus request operation puts the parsed JSON under `.data`.\n  const res = data.generate_article && data.generate_article.data;\n  if (!res || !res.ok || !res.article) {\n    const err = res && res.error ? res.error : 'unknown error from /api/articles/generate';\n    throw new Error(`Article generation failed: ${err}`);\n  }\n\n  const a = res.article;\n  const hero = a.heroImage || {};\n\n  // camelCase → snake_case, matching the `articles` collection fields\n  // used by the rest of the codebase (see lib/articles.ts).\n  // Author arrives as the full object — we keep only the slug so Directus\n  // resolves the M2O against the `authors` collection. If the slug doesn't\n  // exist yet, the item-create step will 4xx — seed the four canonical\n  // authors (baguette, sofia-mendoza, diego-ramirez, ana-vargas) once.\n  return {\n    payload: {\n      slug:                a.slug,\n      title:               a.title,\n      short:               a.short,\n      excerpt:             a.excerpt,\n      category:            a.category,\n      status:              'draft',\n      published_at:        a.publishedAt,\n      read_minutes:        a.readMinutes,\n      hero_image_alt:      hero.alt || '',\n      hero_image_caption:  hero.caption || null,\n      body:                a.body || [],\n      body_eli5:           a.bodyEli5 || null,\n      author:              (a.author && a.author.slug) || 'baguette'\n    },\n    usage: res.usage || null\n  };\n};"
-      },
-      "resolve": "op-insert-article-00000-000000000004",
-      "reject": null,
-      "flow": "65866729-8338-480f-9e68-22dfa27fd99b"
-    },
-    {
-      "id": "op-insert-article-00000-000000000004",
-      "name": "Insert as draft into `articles`",
-      "key": "insert_article",
-      "type": "item-create",
-      "position_x": 35,
-      "position_y": 1,
-      "options": {
-        "collection": "articles",
-        "payload": "{{prepare_payload.payload}}"
       },
       "resolve": null,
       "reject": null,

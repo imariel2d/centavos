@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual as nodeTimingSafeEqual } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
-import { generateArticle } from "@/lib/claude";
+import { generateArticle, saveGeneratedArticle, type SavedArticleRef } from "@/lib/claude";
 
 // Constant-time compare to avoid leaking the secret via timing side channels.
 // Short-circuits on length mismatch (length isn't sensitive — different
@@ -36,8 +36,14 @@ const ADMIN_SECRET = process.env.ARTICLE_GENERATOR_SECRET;
  * draft. If `topic` is omitted (the cron path), Claude picks the topic
  * itself per the rules in the system prompt.
  *
- * Generates a full Centavo article via Claude Opus 4.8 and returns it as
- * a JSON object the editor can drop straight into Directus / TS source.
+ * Generates a full Centavo article via Claude Opus 4.8, saves it into the
+ * Directus `articles` collection as `status=draft`, and returns both the
+ * article object and the saved row's ID.
+ *
+ * Save failures don't fail the request — we always return 200 with the
+ * generated article in the body, plus `saved: null` and `saveError`. This
+ * way Directus' webhook retry doesn't re-trigger Claude (which would burn
+ * tokens). Operators can replay manually from the response payload.
  */
 export async function POST(req: Request) {
   if (!ADMIN_SECRET) {
@@ -79,7 +85,25 @@ export async function POST(req: Request) {
 
   try {
     const { article, raw, usage } = await generateArticle({ topic });
-    return NextResponse.json({ ok: true, article, raw, usage });
+
+    // Try to persist; never let a save failure cascade into "regenerate".
+    let saved: SavedArticleRef | null = null;
+    let saveError: string | null = null;
+    try {
+      saved = await saveGeneratedArticle(article);
+    } catch (err) {
+      saveError = err instanceof Error ? err.message : String(err);
+      console.error("[articles/generate] directus save failed", saveError);
+    }
+
+    return NextResponse.json({
+      ok: saveError === null,
+      article,
+      saved,
+      saveError,
+      raw,
+      usage,
+    });
   } catch (err) {
     // Surface Anthropic errors with their real status codes so the caller
     // can tell auth failures (401) from rate limits (429) from server errors.

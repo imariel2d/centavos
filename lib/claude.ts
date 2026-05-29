@@ -1,5 +1,6 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
+import { directusFetch } from "@/lib/directus";
 
 // Single shared client. Reads ANTHROPIC_API_KEY from env automatically.
 let _client: Anthropic | null = null;
@@ -196,6 +197,68 @@ export async function generateArticle(
 
   const article = parseArticleJson(text);
   return { article, raw: text, usage: message.usage };
+}
+
+// ── Persistence ─────────────────────────────────────────────────────────
+
+export type SavedArticleRef = {
+  /** Directus primary key — numeric `id` on the `articles` collection. */
+  id: number;
+  /** Echo of the slug we sent, useful for building admin URLs. */
+  slug: string;
+};
+
+/**
+ * Persist a generated article into the Directus `articles` collection as
+ * `status=draft`. Maps the camelCase API shape → the snake_case Directus
+ * row shape (mirror of the read-side `DArticle` in lib/articles.ts).
+ *
+ * Throws on:
+ *   - missing DIRECTUS_TOKEN (directusFetch handles auth)
+ *   - 4xx from Directus (slug collision, missing M2O target, etc.)
+ *   - network failure
+ *
+ * The author M2O is resolved by slug — passing the slug string is enough,
+ * Directus matches against the related collection's primary key (which is
+ * `slug` in this project). If Claude returns a slug not seeded in
+ * `authors`, this 4xxs.
+ */
+export async function saveGeneratedArticle(
+  article: GeneratedArticle,
+): Promise<SavedArticleRef> {
+  const hero = article.heroImage ?? { alt: "" };
+
+  const payload = {
+    slug: article.slug,
+    title: article.title,
+    short: article.short,
+    excerpt: article.excerpt,
+    category: article.category,
+    status: "draft" as const,
+    published_at: article.publishedAt,
+    read_minutes: article.readMinutes,
+    hero_image_alt: hero.alt ?? "",
+    hero_image_caption: hero.caption ?? null,
+    body: article.body ?? [],
+    body_eli5: article.bodyEli5 ?? null,
+    // Fallback to Baguette if Claude omitted the author block — keeps
+    // the draft creatable rather than 4xx-ing on a null M2O.
+    author: article.author?.slug ?? "baguette",
+  };
+
+  const res = await directusFetch<{ data: { id: number; slug: string } }>(
+    "/items/articles",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+      // POST responses aren't cached by Next, but being explicit keeps
+      // the dev-vs-prod branch in directusFetch from picking a stale
+      // tagged entry from a parallel GET.
+      cache: "no-store",
+    },
+  );
+
+  return { id: res.data.id, slug: res.data.slug };
 }
 
 /**
