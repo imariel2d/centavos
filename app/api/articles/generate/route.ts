@@ -23,13 +23,18 @@ const ADMIN_SECRET = process.env.ARTICLE_GENERATOR_SECRET;
 /**
  * POST /api/articles/generate
  *
- * Body:    { topic: string, date?: string }
+ * Body:    { topic?: string }    // optional — omit to let Claude pick
  * Auth:    x-cron-article: <ARTICLE_GENERATOR_SECRET>
  *          (also accepted as `Authorization: Bearer <…>` for manual curl/tests)
  *
  * Triggered by a Directus cron flow — Directus passes the secret via a
  * custom request header, which is friendlier than overloading Authorization
  * (Directus flows already use Authorization for their own auth).
+ *
+ * The publish date is **always** the server's current date — not accepted
+ * from the request — so a stale or spoofed `date` field can't end up on a
+ * draft. If `topic` is omitted (the cron path), Claude picks the topic
+ * itself per the rules in the system prompt.
  *
  * Generates a full Centavo article via Claude Opus 4.8 and returns it as
  * a JSON object the editor can drop straight into Directus / TS source.
@@ -59,28 +64,21 @@ export async function POST(req: Request) {
     );
   }
 
+  // Body is optional. Only `topic` is honored — anything else is ignored.
   const body = await req.json().catch(() => ({}));
-  const topic = typeof body.topic === "string" ? body.topic.trim() : "";
-  const dateInput = typeof body.date === "string" ? body.date.trim() : "";
+  const rawTopic = typeof body.topic === "string" ? body.topic.trim() : "";
 
-  if (!topic || topic.length > 500) {
+  if (rawTopic.length > 500) {
     return NextResponse.json(
-      { ok: false, error: "Tema inválido (1–500 caracteres)." },
+      { ok: false, error: "Tema demasiado largo (máx 500 caracteres)." },
       { status: 400 },
     );
   }
-
-  // Default to today in YYYY-MM-DD if no date is provided.
-  const date = dateInput || new Date().toISOString().slice(0, 10);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return NextResponse.json(
-      { ok: false, error: "Fecha inválida. Usa YYYY-MM-DD." },
-      { status: 400 },
-    );
-  }
+  // Empty string → undefined so generateArticle takes the "Claude picks" path.
+  const topic = rawTopic || undefined;
 
   try {
-    const { article, raw, usage } = await generateArticle(topic, date);
+    const { article, raw, usage } = await generateArticle({ topic });
     return NextResponse.json({ ok: true, article, raw, usage });
   } catch (err) {
     // Surface Anthropic errors with their real status codes so the caller

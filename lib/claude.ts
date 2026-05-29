@@ -81,16 +81,46 @@ Incluye mínimo: 1 pullquote, 1 tip, 1 chart, 1 recap, 1 story.
 6. "La filosofía Baguette" (cierre con la tesis: no necesitas sufrir para construir bien)
 7. Story block — historia ficticia de un lector mexicano
 8. Recap
+
+## Cómo elegir el tema (cuando no te lo damos)
+Este blog publica un artículo diario, así que tú eliges el tema en cada corrida.
+- Pick algo **específico y accionable**, no genérico. ❌ "Cómo ahorrar". ✅ "Cómo armar tu fondo de emergencia en 6 meses sin recortar el café".
+- Rota entre las cuatro categorías para que el blog no se cargue a una sola.
+- Que sea evergreen pero con ángulo concreto (un truco, un error común, una decisión que la audiencia tiene que tomar).
+- Que el autor coincida con la categoría: ahorro → Sofía, créditos → Diego, AFORE/PPR → Ana, opinión / cultura financiera / mezcla → Baguette.
+- El \`slug\` debe ser kebab-case descriptivo y único.
 `.trim();
 
-export const buildArticlePrompt = (topic: string, date: string): string => `
+/**
+ * The user message paired with the system prompt. Two modes:
+ *   - explicit topic → write about that topic
+ *   - no topic → let Claude pick (see "Cómo elegir el tema" in the system prompt)
+ *
+ * `date` is the YYYY-MM-DD the article should be stamped with — always the
+ * caller's current date; not user-supplied.
+ */
+export const buildArticlePrompt = (date: string, topic?: string): string => {
+  if (topic && topic.trim()) {
+    return `
 Escribe un artículo para el blog Centavo sobre el siguiente tema:
 
-Tema: ${topic}
+Tema: ${topic.trim()}
 Fecha de publicación: ${date}
 
 Recuerda: responde ÚNICAMENTE con el objeto JSON. Sin texto adicional, sin markdown.
 `.trim();
+  }
+
+  return `
+Escribe el artículo de hoy para el blog Centavo. Tú decides el tema.
+
+Fecha de publicación: ${date}
+
+Sigue las reglas de "Cómo elegir el tema" del system prompt — sé específico, varía categoría, y elige al autor que corresponda.
+
+Recuerda: responde ÚNICAMENTE con el objeto JSON. Sin texto adicional, sin markdown.
+`.trim();
+};
 
 // ── Generation ──────────────────────────────────────────────────────────
 
@@ -114,15 +144,22 @@ export type GeneratedArticle = {
  * Vercel's response-body timeout on long generations, then returns the parsed
  * article object.
  *
+ * `topic` is optional — when omitted, Claude picks the topic itself per the
+ * "Cómo elegir el tema" rules in the system prompt (this is the daily-cron
+ * mode). When provided, Claude writes about that topic (manual / editor mode).
+ *
+ * `publishedAt` defaults to the server's current date in YYYY-MM-DD — never
+ * accept this from a client request, only override it from trusted code.
+ *
  * Throws on:
  *   - missing ANTHROPIC_API_KEY
  *   - Anthropic API failure (rate limits, auth, etc.)
  *   - response that doesn't parse as JSON
  */
 export async function generateArticle(
-  topic: string,
-  date: string,
+  opts: { topic?: string; publishedAt?: string } = {},
 ): Promise<{ article: GeneratedArticle; raw: string; usage: Anthropic.Messages.Usage }> {
+  const date = opts.publishedAt ?? new Date().toISOString().slice(0, 10);
   const client = anthropic();
 
   // System prompt is frozen → marked for caching. On first call this writes
@@ -143,7 +180,7 @@ export async function generateArticle(
       },
     ],
     messages: [
-      { role: "user", content: buildArticlePrompt(topic, date) },
+      { role: "user", content: buildArticlePrompt(date, opts.topic) },
     ],
   });
 
