@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
+import { waitUntil } from "@vercel/functions";
 import { sendEmail } from "@/lib/resend";
 import { welcomeEmailHtml, welcomeEmailSubject } from "@/lib/emails/welcome";
 
@@ -55,9 +56,13 @@ export async function POST(req: Request) {
 
   if (r.ok) {
     // Best-effort welcome email — never fail the subscription if Resend hiccups.
-    sendWelcome(email, unsubscribeToken).catch((err) => {
-      console.error("[newsletter/subscribe] welcome email failed", err);
-    });
+    // waitUntil keeps the serverless runtime alive past the response so the
+    // fetch to Resend actually completes (a bare promise gets killed on Vercel).
+    waitUntil(
+      sendWelcome(email, unsubscribeToken).catch((err) => {
+        console.error("[newsletter/subscribe] welcome email failed", err);
+      }),
+    );
     return NextResponse.json({ ok: true });
   }
 
