@@ -112,6 +112,16 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
   return mapArticle(row);
 }
 
+/** Fetches any article regardless of status — for draft previews only. */
+export async function getArticleDraftBySlug(slug: string): Promise<Article | null> {
+  if (USE_MOCK_DATA) return MOCK_ARTICLES.find((a) => a.slug === slug) ?? null;
+  const row = await directusOne<Row<DArticle>>(
+    `/items/articles/${encodeURIComponent(slug)}?${ARTICLE_FIELDS}`,
+  );
+  if (!row) return null;
+  return mapArticle(row);
+}
+
 export async function getArticlesByCategory(category: CategorySlug): Promise<Article[]> {
   if (USE_MOCK_DATA) return MOCK_ARTICLES.filter((a) => a.category === category);
   const rows = await directusList<Row<DArticle>>(
@@ -272,23 +282,27 @@ const HOME_FIELDS = [
   "more_articles.articles_slug.author.*",
 ].join(",");
 
+function isPublishedArticle(
+  r: DJunctionRow,
+): r is DJunctionRow & { articles_slug: Row<DArticle> } {
+  return (
+    r.articles_slug != null &&
+    typeof r.articles_slug === "object" &&
+    r.articles_slug.status === "published"
+  );
+}
+
 function junctionToArticles(rows: DJunctionRow[] | undefined): Article[] {
   if (!rows) return [];
-  return rows
-    .filter((r): r is DJunctionRow & { articles_slug: Row<DArticle> } =>
-      r.articles_slug != null && typeof r.articles_slug === "object")
-    .map((r) => mapArticle(r.articles_slug));
+  return rows.filter(isPublishedArticle).map((r) => mapArticle(r.articles_slug));
 }
 
 function junctionToStarters(rows: DJunctionRow[] | undefined): HomeStarterStep[] {
   if (!rows) return [];
-  return rows
-    .filter((r): r is DJunctionRow & { articles_slug: Row<DArticle> } =>
-      r.articles_slug != null && typeof r.articles_slug === "object")
-    .map((r) => ({
-      article: mapArticle(r.articles_slug),
-      color: r.color ?? "peach",
-    }));
+  return rows.filter(isPublishedArticle).map((r) => ({
+    article: mapArticle(r.articles_slug),
+    color: r.color ?? "peach",
+  }));
 }
 
 export async function getHomePage(): Promise<HomePageData> {
