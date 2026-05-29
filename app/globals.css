@@ -51,5 +51,5 @@ body {
 .prose-centavo a { color: var(--color-mandarina-deep); text-decoration: underline; text-underline-offset: 3px; }
 
 /* Animación sutil al hover de cards */
-.card-hover { transition: transform .18s ease, box-shadow .18s ease; }
-.card-hover:hover { transform: translateY(-2px); }
+.card-hover { transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease; }
+.card-hover:hover { transform: translateY(-2px); opacity: 0.82; }

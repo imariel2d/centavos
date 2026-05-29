@@ -10,7 +10,7 @@ export function TrendingList({ articles }: { articles: Article[] }) {
       <ol className="mt-3 divide-y divide-rule">
         {articles.map((a, i) => (
           <li key={a.slug}>
-            <Link href={`/articulos/${a.slug}`} className="flex gap-3.5 items-center py-3.5">
+            <Link href={`/articulos/${a.slug}`} className="flex gap-3.5 items-center py-3.5 transition-opacity duration-150 hover:opacity-70">
               <span
                 className={`font-display text-3xl font-extrabold tracking-[-0.04em] leading-none w-8 ${
                   i === 0 ? "text-mandarina" : "text-ink-soft/40"

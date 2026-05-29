@@ -69,7 +69,7 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-ink text-bg px-5 py-3 rounded-xl text-[13px] font-bold disabled:opacity-60"
+          className="bg-ink text-bg px-5 py-3 rounded-xl text-[13px] font-bold disabled:opacity-60 cursor-pointer hover:opacity-80 transition-opacity duration-150"
         >
           {loading ? "..." : "Le va"}
         </button>
