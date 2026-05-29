@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL ?? "http://localhost:8055";
 const DIRECTUS_TOKEN = process.env.DIRECTUS_TOKEN;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://centavos.mx";
 
 // Intentionally permissive — server-side guard against blank/garbage,
 // not a full RFC 5322 validator. The browser already does the strict check.
