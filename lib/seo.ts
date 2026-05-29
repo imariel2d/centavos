@@ -15,7 +15,7 @@ export function organizationJsonLd() {
     "logo": `${SITE_URL}/logo.png`,
     "sameAs": [
       // "https://twitter.com/centavo_mx",
-      // "https://instagram.com/centavo.mx",
+      // "https://instagram.com/centavos.mx",
     ],
     "description": "Blog financiero mexicano: le ayudamos a la banda a perderle el miedo a la lana.",
   };

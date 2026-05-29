@@ -64,7 +64,7 @@ bun install
 bun run dev                           # http://localhost:3000
 ```
 
-Admin de Directus: <http://localhost:8055> (`admin@centavo.mx` / `admin`).
+Admin de Directus: <http://localhost:8055> (`admin@centavos.mx` / `admin`).
 
 ### Toggle mock ↔ Directus
 
@@ -80,12 +80,12 @@ USE_MOCK_DATA=false    # (default) sirve desde Directus
 
 | Variable | Default | Para qué sirve |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | `https://centavo.mx` | URL canónica usada en metadata/sitemap |
+| `NEXT_PUBLIC_SITE_URL` | `https://centavos.mx` | URL canónica usada en metadata/sitemap |
 | `DIRECTUS_URL` | `http://localhost:8055` | Endpoint del CMS (server-side only) |
 | `DIRECTUS_TOKEN` | — | Token estático del usuario "Web" (server-side only). Lo escribe `bootstrap.mjs` |
 | `USE_MOCK_DATA` | `false` | `true` → ignora Directus y sirve `data/mock.ts` |
 | `CONTACT_EMAIL` | — | Si está vacío, se oculta la CTA "¿Tienes una historia?" en `/nosotros` |
-| `ADMIN_EMAIL` | `admin@centavo.mx` | Solo para los scripts en `directus/` |
+| `ADMIN_EMAIL` | `admin@centavos.mx` | Solo para los scripts en `directus/` |
 | `ADMIN_PASSWORD` | `admin` | Solo para los scripts en `directus/` |
 
 ## Cómo se conecta al CMS

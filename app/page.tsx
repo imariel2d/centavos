@@ -33,7 +33,7 @@ export default async function HomePage() {
   ]);
 
   const [hero, ...rest] = articles;
-  const hasContact = Boolean(process.env.CONTACT_EMAIL);
+  const newsletterEnabled = Boolean(process.env.RESEND_REPLY_TO);
 
   return (
     <>
@@ -55,7 +55,7 @@ export default async function HomePage() {
         {categories.length > 0 && <CategoriesGrid categories={categories} />}
         <AboutTeaser />
         <GlossaryTeaser />
-        {hasContact && <NewsletterCTA />}
+        {newsletterEnabled && <NewsletterCTA />}
         {homePage.moreArticles.length > 0 && <MoreArticlesGrid articles={homePage.moreArticles} />}
       </main>
 

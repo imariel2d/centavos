@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const URL   = process.env.DIRECTUS_URL   ?? "http://localhost:8055";
-const EMAIL = process.env.ADMIN_EMAIL    ?? "admin@centavo.mx";
+const EMAIL = process.env.ADMIN_EMAIL    ?? "admin@centavos.mx";
 const PASS  = process.env.ADMIN_PASSWORD ?? "admin";
 
 const here = dirname(fileURLToPath(import.meta.url));

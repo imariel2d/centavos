@@ -11,10 +11,10 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const URL   = process.env.DIRECTUS_URL   ?? "http://localhost:8055";
-const EMAIL = process.env.ADMIN_EMAIL    ?? "admin@centavo.mx";
+const EMAIL = process.env.ADMIN_EMAIL    ?? "admin@centavos.mx";
 const PASS  = process.env.ADMIN_PASSWORD ?? "admin";
 
-const WEB_USER_EMAIL = "web@centavo.mx";
+const WEB_USER_EMAIL = "web@centavos.mx";
 const here = dirname(fileURLToPath(import.meta.url));
 const envPath = join(here, "..", ".env.local");
 
@@ -250,6 +250,44 @@ async function run() {
   await addField("home_page", "trending",       { type: "alias", meta: { interface: "list-m2m", special: ["m2m"], options: { template: "{{articles_slug.title}}" } } });
   await addField("home_page", "more_articles",  { type: "alias", meta: { interface: "list-m2m", special: ["m2m"], options: { template: "{{articles_slug.title}}" } } });
 
+  // newsletter_subscribers (double opt-in via Resend)
+  await createSubscribersCollection();
+  await addField("newsletter_subscribers", "email", {
+    type: "string",
+    meta: { interface: "input", required: true, width: "full", options: { trim: true, iconLeft: "alternate_email" } },
+    schema: { is_unique: true, is_nullable: false },
+  });
+  await addField("newsletter_subscribers", "confirm_token", {
+    type: "string",
+    meta: { interface: "input", hidden: true, readonly: true, note: "Cleared once the subscriber confirms" },
+  });
+  await addField("newsletter_subscribers", "unsubscribe_token", {
+    type: "string",
+    meta: { interface: "input", hidden: true, readonly: true, note: "Stable per-subscriber token embedded in every send" },
+    schema: { is_nullable: false },
+  });
+  await addField("newsletter_subscribers", "confirmed_at", {
+    type: "timestamp",
+    meta: { interface: "datetime", readonly: true, width: "half" },
+  });
+  await addField("newsletter_subscribers", "unsubscribed_at", {
+    type: "timestamp",
+    meta: { interface: "datetime", readonly: true, width: "half" },
+  });
+  await addField("newsletter_subscribers", "source", {
+    type: "string",
+    meta: { interface: "input", width: "half", note: "Where they signed up from (e.g. homepage_footer)" },
+  });
+  await addField("newsletter_subscribers", "language", {
+    type: "string",
+    meta: { interface: "input", width: "half" },
+    schema: { default_value: "es" },
+  });
+  await addField("newsletter_subscribers", "ip_hash", {
+    type: "string",
+    meta: { interface: "input", hidden: true, readonly: true, note: "SHA-256(ip + salt) for abuse rate limiting" },
+  });
+
   // Register M2O relations so `?fields=author.*` joins work
   await ensureRelation({ collection: "glossary_terms", field: "category", related: "categories" });
   await ensureRelation({ collection: "articles",       field: "category", related: "categories" });
@@ -283,7 +321,7 @@ async function run() {
   const newToken = await ensureWebUser(allCollections);
   if (newToken) writeTokenToEnv(newToken);
 
-  console.log("\ndone. open http://localhost:8055 (admin@centavo.mx / admin)");
+  console.log("\ndone. open http://localhost:8055 (admin@centavos.mx / admin)");
 }
 
 async function createSingleton(name, opts = {}) {
@@ -323,6 +361,75 @@ async function createJunction(name) {
     }),
   });
   console.log(`  + junction ${name}`);
+}
+
+async function createSubscribersCollection() {
+  const name = "newsletter_subscribers";
+  if (await exists(`/collections/${name}`)) {
+    console.log(`= collection ${name}`);
+    return;
+  }
+  await api("/collections", {
+    method: "POST",
+    body: JSON.stringify({
+      collection: name,
+      meta: {
+        icon: "mark_email_read",
+        note: "Newsletter subscribers (double opt-in)",
+        sort: 10,
+        display_template: "{{email}}",
+        archive_field: "status",
+        archive_value: "unsubscribed",
+        unarchive_value: "pending",
+      },
+      schema: { name },
+      fields: [
+        {
+          field: "id",
+          type: "integer",
+          meta: { hidden: true, interface: "input", readonly: true },
+          schema: { is_primary_key: true, has_auto_increment: true },
+        },
+        {
+          field: "status",
+          type: "string",
+          meta: {
+            width: "half",
+            interface: "select-dropdown",
+            options: {
+              choices: [
+                { text: "Pending",      value: "pending" },
+                { text: "Confirmed",    value: "confirmed" },
+                { text: "Unsubscribed", value: "unsubscribed" },
+              ],
+            },
+            display: "labels",
+            display_options: {
+              showAsDot: true,
+              choices: [
+                { text: "Pending",      value: "pending",      foreground: "#18222F", background: "#FFD79A" },
+                { text: "Confirmed",    value: "confirmed",    foreground: "#FFFFFF", background: "#2ECDA7" },
+                { text: "Unsubscribed", value: "unsubscribed", foreground: "#FFFFFF", background: "#A2B5CD" },
+              ],
+            },
+          },
+          schema: { default_value: "pending", is_nullable: false },
+        },
+        {
+          field: "date_created",
+          type: "timestamp",
+          meta: {
+            special: ["date-created"],
+            interface: "datetime",
+            readonly: true,
+            width: "half",
+            display: "datetime",
+          },
+        },
+      ],
+    }),
+  });
+  console.log(`+ collection ${name}`);
 }
 
 async function ensureRelation({ collection, field, related, meta: extraMeta }) {
@@ -382,6 +489,27 @@ async function ensureReadPermissions(policyId, collections) {
   }
 }
 
+async function ensureNewsletterPermissions(policyId) {
+  const collection = "newsletter_subscribers";
+  const perms = (await api(`/permissions?filter[policy][_eq]=${policyId}&filter[collection][_eq]=${collection}&limit=-1`)).data;
+  const have = new Set(perms.map((p) => p.action));
+  for (const action of ["read", "create", "update"]) {
+    if (have.has(action)) continue;
+    await api(`/permissions`, {
+      method: "POST",
+      body: JSON.stringify({
+        policy: policyId,
+        collection,
+        action,
+        fields: ["*"],
+        permissions: {},
+        validation: {},
+      }),
+    });
+    console.log(`  + ${action} perm on ${collection}`);
+  }
+}
+
 async function ensureWebUser(collections) {
   // 1) Policy
   let policies = (await api(`/policies?filter[name][_eq]=Web&limit=1`)).data;
@@ -404,6 +532,8 @@ async function ensureWebUser(collections) {
 
   await ensureReadPermissions(policy.id, collections);
   console.log(`  = read perms on ${collections.length} collections`);
+
+  await ensureNewsletterPermissions(policy.id);
 
   // 2) Role
   let roles = (await api(`/roles?filter[name][_eq]=Web&limit=1`)).data;
