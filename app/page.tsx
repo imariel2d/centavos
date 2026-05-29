@@ -39,7 +39,7 @@ export default async function HomePage() {
     <>
       <Header />
 
-      <main>
+      <main className="pb-10 md:pb-14">
         <HeroKicker edition={24} />
         {hero && <FeaturedHero article={hero} />}
         <div className="mx-auto max-w-screen-md">
@@ -56,7 +56,7 @@ export default async function HomePage() {
         <AboutTeaser />
         <GlossaryTeaser />
         {newsletterEnabled && <NewsletterCTA />}
-        {homePage.moreArticles.length > 0 && <MoreArticlesGrid articles={homePage.moreArticles} />}
+        {/*{homePage.moreArticles.length > 0 && <MoreArticlesGrid articles={homePage.moreArticles} />}*/}
       </main>
 
       <Footer />
