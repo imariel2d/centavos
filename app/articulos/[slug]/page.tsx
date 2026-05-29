@@ -112,8 +112,8 @@ export default async function ArticlePage({
               También te puede latir
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {related.map((r, i) => (
-                <ArticleCard key={r.slug} article={r} variant="compact" accentIndex={i + 1} />
+              {related.map((r) => (
+                <ArticleCard key={r.slug} article={r} variant="compact" />
               ))}
             </div>
           </section>

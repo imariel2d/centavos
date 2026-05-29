@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { SectionHead } from "@/components/SectionHead";
+import { CATEGORY_BG } from "@/lib/format";
 import type { Category } from "@/types";
-
-const TILE_BG = ["bg-peach", "bg-sand", "bg-sky", "bg-mandarina"];
 
 export function CategoriesGrid({ categories }: { categories: Category[] }) {
   return (
@@ -11,13 +10,13 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
         <SectionHead kicker="Explora" title="Por categoría" />
       </div>
       <div className="grid grid-cols-2 gap-2.5 mt-4">
-        {categories.map((c, i) => {
-          const isOrange = i === 3;
+        {categories.map((c) => {
+          const bg = CATEGORY_BG[c.slug] ?? "bg-peach";
           return (
             <Link
               key={c.slug}
               href={`/categorias/${c.slug}`}
-              className={`${TILE_BG[i % TILE_BG.length]} card-hover rounded-3xl px-4 py-5 min-h-[130px] flex flex-col justify-between ${isOrange ? "text-bg" : "text-ink"}`}
+              className={`${bg} card-hover rounded-3xl px-4 py-5 min-h-[130px] flex flex-col justify-between text-ink`}
             >
               <div className="font-display text-2xl md:text-3xl font-extrabold tracking-[-0.04em] leading-none">{c.name}</div>
               <div>

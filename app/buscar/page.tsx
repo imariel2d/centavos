@@ -172,7 +172,7 @@ export default async function SearchPage({
                   <div className="text-[10px] text-mandarina-deep font-extrabold tracking-wider uppercase mb-2 px-1">
                     ★ Resultado destacado
                   </div>
-                  <ArticleCard article={results[0]} variant="feature" accentIndex={3} />
+                  <ArticleCard article={results[0]} variant="feature" />
                 </section>
 
                 {/* Glossary suggestion */}

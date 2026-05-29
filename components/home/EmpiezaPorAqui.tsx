@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { SectionHead } from "@/components/SectionHead";
-import type { CategorySlug, HomeStarterStep } from "@/types";
-
-const CATEGORY_COLOR: Record<CategorySlug, string> = {
-  ahorro:   "bg-peach",
-  creditos: "bg-sand",
-  afore:    "bg-sky",
-  ppr:      "bg-sky",
-};
+import { CATEGORY_BG } from "@/lib/format";
+import type { HomeStarterStep } from "@/types";
 
 export function EmpiezaPorAqui({ steps }: { steps: HomeStarterStep[] }) {
   if (steps.length === 0) return null;
@@ -20,7 +14,7 @@ export function EmpiezaPorAqui({ steps }: { steps: HomeStarterStep[] }) {
           <Link
             key={s.article.slug}
             href={`/articulos/${s.article.slug}`}
-            className={`${CATEGORY_COLOR[s.article.category] ?? "bg-peach"} card-hover flex items-center gap-4 rounded-2xl px-5 py-4`}
+            className={`${CATEGORY_BG[s.article.category] ?? "bg-peach"} card-hover flex items-center gap-4 rounded-2xl px-5 py-4`}
           >
             <span className="font-display text-2xl font-extrabold tracking-[-0.04em] text-ink/40 leading-none">
               {String(i + 1).padStart(2, "0")}

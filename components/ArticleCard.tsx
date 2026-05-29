@@ -1,30 +1,25 @@
 import Link from "next/link";
 import type { Article } from "@/types";
 import { Chip } from "./Chip";
-import { categoryName } from "@/lib/format";
+import { categoryName, CATEGORY_BG } from "@/lib/format";
 
 type Variant = "default" | "compact" | "feature";
-
-const ACCENTS = ["bg-peach", "bg-sand", "bg-sky", "bg-mandarina"] as const;
 
 export function ArticleCard({
   article,
   variant = "default",
-  accentIndex = 0,
 }: {
   article: Article;
   variant?: Variant;
-  accentIndex?: number;
 }) {
   const a = article;
-  const accent = ACCENTS[accentIndex % ACCENTS.length];
-  const isOrange = accentIndex % ACCENTS.length === 3;
+  const accent = CATEGORY_BG[a.category] ?? "bg-peach";
 
   if (variant === "compact") {
     return (
       <Link
         href={`/articulos/${a.slug}`}
-        className={`${accent} card-hover rounded-2xl p-4 flex flex-col justify-between min-h-[150px] ${isOrange ? "text-bg" : "text-ink"}`}
+        className={`${accent} card-hover rounded-2xl p-4 flex flex-col justify-between min-h-[150px] text-ink`}
       >
         <Chip bg="var(--color-ink)" fg="var(--color-bg)" size="sm">
           {categoryName(a.category)}
@@ -69,7 +64,7 @@ export function ArticleCard({
   return (
     <Link
       href={`/articulos/${a.slug}`}
-      className={`${accent} card-hover block rounded-3xl p-5 ${isOrange ? "text-bg" : "text-ink"}`}
+      className={`${accent} card-hover block rounded-3xl p-5 text-ink`}
     >
       <Chip bg="var(--color-ink)" fg="var(--color-bg)" size="md">
         {categoryName(a.category)}

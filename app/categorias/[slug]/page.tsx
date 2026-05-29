@@ -11,7 +11,7 @@ import {
   getCategoryBySlug,
 } from "@/lib/articles";
 import { breadcrumbsJsonLd, SITE } from "@/lib/seo";
-import { categoryName, formatDate } from "@/lib/format";
+import { categoryName, formatDate, CATEGORY_BG, CATEGORY_COLOR_VAR } from "@/lib/format";
 import type { CategorySlug } from "@/types";
 
 export const revalidate = 3600;
@@ -73,7 +73,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
         </nav>
 
         {/* Header bloque de color */}
-        <header className="bg-peach px-6 py-7 md:py-10 mt-3 mx-4 rounded-3xl">
+        <header className={`${CATEGORY_BG[slug as CategorySlug] ?? "bg-peach"} px-6 py-7 md:py-10 mt-3 mx-4 rounded-3xl`}>
           <div className="text-[11px] font-extrabold tracking-wider text-mandarina-deep uppercase mb-2.5">
             Categoría · {String(position).padStart(2, "0")}/{total}
           </div>
@@ -102,7 +102,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {articles.map((a, i) => (
-                <ArticleCard key={a.slug} article={a} variant={i === 0 ? "feature" : "default"} accentIndex={i} />
+                <ArticleCard key={a.slug} article={a} variant={i === 0 ? "feature" : "default"} />
               ))}
             </div>
           )}
@@ -120,7 +120,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
                   <Link href={`/articulos/${a.slug}`} className="flex gap-3.5 items-start py-4">
                     <div
                       className="w-16 h-16 rounded-xl flex-shrink-0"
-                      style={{ background: "var(--color-peach)" }}
+                      style={{ background: CATEGORY_COLOR_VAR[a.category] ?? "var(--color-peach)" }}
                       aria-hidden
                     />
                     <div className="flex-1">

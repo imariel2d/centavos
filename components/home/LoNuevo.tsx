@@ -1,10 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { SectionHead } from "@/components/SectionHead";
-import { categoryName } from "@/lib/format";
+import { categoryName, CATEGORY_COLOR_VAR } from "@/lib/format";
 import type { Article } from "@/types";
-
-const TILE_BG = ["var(--color-peach)", "var(--color-sand)", "var(--color-sky)"];
 
 export function LoNuevo({ articles }: { articles: Article[] }) {
   if (articles.length === 0) return null;
@@ -31,7 +29,7 @@ export function LoNuevo({ articles }: { articles: Article[] }) {
             ) : (
               <div
                 className="w-16 h-16 rounded-xl flex-shrink-0"
-                style={{ background: TILE_BG[i] }}
+                style={{ background: CATEGORY_COLOR_VAR[a.category] ?? "var(--color-peach)" }}
                 aria-hidden
               />
             )}

@@ -9,8 +9,8 @@ export function MoreArticlesGrid({ articles }: { articles: Article[] }) {
         <SectionHead kicker="Sigue leyendo" title="Más artículos" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-        {articles.slice(0, 4).map((a, i) => (
-          <ArticleCard key={a.slug} article={a} variant="default" accentIndex={i} />
+        {articles.slice(0, 4).map((a) => (
+          <ArticleCard key={a.slug} article={a} variant="default" />
         ))}
       </div>
     </section>
