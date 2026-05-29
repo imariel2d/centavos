@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Centavo welcome email — hand-rolled HTML for email-client compatibility.
+ * Centavos welcome email — hand-rolled HTML for email-client compatibility.
  * Brand colors mirror app/globals.css @theme tokens. Uses system fonts because
  * @next/font's Bricolage / Manrope / Caveat don't render in most email clients.
  */
@@ -11,7 +11,7 @@ type WelcomeEmailParams = {
   preferencesUrl: string;
 };
 
-// Centavo brand tokens (sync with app/globals.css if it changes)
+// Centavos brand tokens (sync with app/globals.css if it changes)
 const BG = "#faf3e3";
 const SURFACE = "#ffffff";
 const MANDARINA = "#ed7e3c";
@@ -38,7 +38,7 @@ export function welcomeEmailHtml({ preferencesUrl }: WelcomeEmailParams): string
 
   <!-- Preheader (hidden preview text) -->
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:${BG};opacity:0;">
-    Cada martes a las 8 AM en tu correo. Lo mejor de Centavo, sin jerga.
+    Cada martes a las 8 AM en tu correo. Lo mejor de Centavos, sin jerga.
   </div>
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${BG};">
@@ -61,7 +61,7 @@ export function welcomeEmailHtml({ preferencesUrl }: WelcomeEmailParams): string
           <tr>
             <td style="padding:28px 32px 4px;">
               <p style="font-size:15px;line-height:1.65;margin:0 0 16px;color:${INK};">
-                Cada <strong>martes a las 8 AM</strong> te llega lo mejor de Centavo en tu correo: historias de dinero contadas como las cuentas tú, sin jerga financiera ni paja.
+                Cada <strong>martes a las 8 AM</strong> te llega lo mejor de Centavos en tu correo: historias de dinero contadas como las cuentas tú, sin jerga financiera ni paja.
               </p>
               <p style="font-size:15px;line-height:1.65;margin:0 0 24px;color:${INK};">
                 Una sola edición por semana. Cero spam, garantizado por nuestro abogado (y por nosotros, que no tenemos abogado).
@@ -101,7 +101,7 @@ export function welcomeEmailHtml({ preferencesUrl }: WelcomeEmailParams): string
 
         </table>
 
-        <div style="font-size:11px;color:${INK_SOFT};margin-top:16px;opacity:.6;">© Centavo · MX</div>
+        <div style="font-size:11px;color:${INK_SOFT};margin-top:16px;opacity:.6;">© Centavos · MX</div>
 
       </td>
     </tr>

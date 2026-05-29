@@ -76,8 +76,8 @@ function articleRow(a: DigestArticle, siteUrl: string): string {
 
 export function digestEmailSubject(edition?: string): string {
   return edition
-    ? `Centavo · Lo de esta semana (${edition})`
-    : "Centavo · Lo de esta semana";
+    ? `Centavos · Lo de esta semana (${edition})`
+    : "Centavos · Lo de esta semana";
 }
 
 export function digestEmailHtml({
@@ -117,7 +117,7 @@ export function digestEmailHtml({
             <td style="background:${MANDARINA};padding:32px 32px 28px;">
               ${edition ? `<div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${INK};opacity:.7;margin-bottom:8px;">${edition}</div>` : ""}
               <h1 style="font-size:28px;line-height:1.05;font-weight:800;letter-spacing:-0.02em;margin:0;color:${INK};">
-                Lo de esta semana<br />en Centavo 📬
+                Lo de esta semana<br />en Centavos 📬
               </h1>
               <p style="font-size:14px;line-height:1.5;color:${INK};opacity:.8;margin:10px 0 0;">
                 Cinco artículos de dinero, sin jerga ni paja.
@@ -170,7 +170,7 @@ export function digestEmailHtml({
 
         </table>
 
-        <div style="font-size:11px;color:${INK_SOFT};margin-top:16px;opacity:.6;">© Centavo · MX</div>
+        <div style="font-size:11px;color:${INK_SOFT};margin-top:16px;opacity:.6;">© Centavos · MX</div>
 
       </td>
     </tr>
