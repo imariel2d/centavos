@@ -16,7 +16,7 @@ import {
 // MUST stay `false` in production — flip it locally for smoke tests, then
 // flip back before committing.
 // ──────────────────────────────────────────────────────────────────────
-const USE_MOCK_ARTICLE = true;
+const USE_MOCK_ARTICLE = false;
 
 // Constant-time compare to avoid leaking the secret via timing side channels.
 // Short-circuits on length mismatch (length isn't sensitive — different
