@@ -10,7 +10,7 @@ const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
   variable: "--font-bricolage",
-  display: "swap",
+  display: "optional",
 });
 
 const manrope = Manrope({
@@ -24,7 +24,7 @@ const caveat = Caveat({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   variable: "--font-caveat",
-  display: "swap",
+  display: "optional",
 });
 
 export const viewport: Viewport = {
