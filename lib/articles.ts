@@ -20,6 +20,7 @@ import type {
   ArticleBlock,
   Author,
   Category,
+  CategoryFaq,
   CategorySlug,
   GlossaryTerm,
   HomePageData,
@@ -31,7 +32,18 @@ import type {
 // ── Directus row shapes (snake_case) ─────────────────────────
 type Row<T> = T & { status?: string };
 
-interface DCategory    { slug: CategorySlug; name: string; blurb: string; count: number }
+interface DCategoryRelatedTerm { glossary_terms_slug: DGlossary | string | null }
+interface DCategory {
+  slug: CategorySlug;
+  name: string;
+  blurb: string;
+  count: number;
+  seo_title?: string | null;
+  seo_description?: string | null;
+  intro_body?: ArticleBlock[] | null;
+  faq?: CategoryFaq[] | null;
+  related_terms?: DCategoryRelatedTerm[] | null;
+}
 interface DAuthor      { slug: string; name: string; role: string; avatar_color?: string | null }
 interface DStory       { id: number; name: string; role: string; quote: string }
 interface DGlossary    { slug: string; term: string; category: CategorySlug; definition: string; eli5: string }
@@ -203,26 +215,73 @@ async function getArticleCountsByCategory(): Promise<Record<string, number>> {
   return Object.fromEntries(json.data.map((r) => [r.category, Number(r.count)]));
 }
 
+/**
+ * Latest `published_at` per category — used by the sitemap to emit a real
+ * `<lastmod>` instead of "now" for every category route.
+ */
+export async function getLatestArticleDateByCategory(): Promise<Record<string, string>> {
+  if (USE_MOCK_DATA) {
+    const map: Record<string, string> = {};
+    for (const a of MOCK_ARTICLES) {
+      if (!map[a.category] || +new Date(a.publishedAt) > +new Date(map[a.category])) {
+        map[a.category] = a.publishedAt;
+      }
+    }
+    return map;
+  }
+  const json = await directusFetch<{
+    data: { category: string; max: { published_at: string } }[];
+  }>(`/items/articles?aggregate[max]=published_at&groupBy[]=category&${PUB}`);
+  return Object.fromEntries(json.data.map((r) => [r.category, r.max.published_at]));
+}
+
+// Deep fields for the detail endpoint — list endpoint skips M2M to stay light.
+const CATEGORY_DEEP_FIELDS = "fields=*,related_terms.glossary_terms_slug.*";
+
+function mapCategory(row: DCategory, count: number): Category {
+  const relatedTerms = Array.isArray(row.related_terms)
+    ? row.related_terms
+        .map((r) => r.glossary_terms_slug)
+        .filter((t): t is DGlossary => !!t && typeof t === "object")
+    : undefined;
+  return {
+    slug: row.slug,
+    name: row.name,
+    blurb: row.blurb,
+    count,
+    seoTitle: row.seo_title ?? undefined,
+    seoDescription: row.seo_description ?? undefined,
+    introBody:
+      Array.isArray(row.intro_body) && row.intro_body.length > 0 ? row.intro_body : undefined,
+    faq: Array.isArray(row.faq) && row.faq.length > 0 ? row.faq : undefined,
+    relatedTerms: relatedTerms && relatedTerms.length > 0 ? relatedTerms : undefined,
+  };
+}
+
 export async function getAllCategories(): Promise<Category[]> {
-  const [rows, counts] = await Promise.all([
-    USE_MOCK_DATA
-      ? Promise.resolve(MOCK_CATEGORIES)
-      : directusList<DCategory>(`/items/categories?${PUB}&sort=name&limit=-1`),
-    getArticleCountsByCategory(),
-  ]);
-  return rows.map((c) => ({ ...c, count: counts[c.slug] ?? 0 }));
+  const counts = await getArticleCountsByCategory();
+  if (USE_MOCK_DATA) {
+    return MOCK_CATEGORIES.map((c) => ({ ...c, count: counts[c.slug] ?? 0 }));
+  }
+  const rows = await directusList<DCategory>(`/items/categories?${PUB}&sort=name&limit=-1`);
+  return rows.map((c) => mapCategory(c, counts[c.slug] ?? 0));
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const row = USE_MOCK_DATA
-    ? MOCK_CATEGORIES.find((c) => c.slug === slug) ?? null
-    : await directusOne<Row<DCategory>>(`/items/categories/${encodeURIComponent(slug)}`);
+  if (USE_MOCK_DATA) {
+    const row = MOCK_CATEGORIES.find((c) => c.slug === slug);
+    if (!row) return null;
+    const counts = await getArticleCountsByCategory();
+    return { ...row, count: counts[row.slug] ?? 0 };
+  }
+  const row = await directusOne<Row<DCategory>>(
+    `/items/categories/${encodeURIComponent(slug)}?${CATEGORY_DEEP_FIELDS}`,
+  );
   if (!row) return null;
   // Single-item endpoint doesn't take a filter; enforce published here.
-  // Mock data has no status field — treat as published.
-  if (!USE_MOCK_DATA && (row as Row<DCategory>).status !== "published") return null;
+  if (row.status !== "published") return null;
   const counts = await getArticleCountsByCategory();
-  return { ...row, count: counts[row.slug] ?? 0 };
+  return mapCategory(row, counts[row.slug] ?? 0);
 }
 
 // ── Authors ──────────────────────────────────────────────────

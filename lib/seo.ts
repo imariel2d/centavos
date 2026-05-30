@@ -1,7 +1,7 @@
 // SEO helpers — JSON-LD schema builders.
 // Inserta el output como <script type="application/ld+json"> en cada página.
 
-import type { Article, GlossaryTerm } from "@/types";
+import type { Article, CategoryFaq, GlossaryTerm } from "@/types";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://centavos.mx";
 const SITE_NAME = "Centavos";
@@ -91,6 +91,39 @@ export function definedTermSetJsonLd(terms: GlossaryTerm[]) {
       "description": t.definition,
       "url": `${SITE_URL}/glosario#${t.slug}`,
     })),
+  };
+}
+
+export function faqPageJsonLd(faq: CategoryFaq[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faq.map((f) => ({
+      "@type": "Question",
+      "name": f.question,
+      "acceptedAnswer": { "@type": "Answer", "text": f.answer },
+    })),
+  };
+}
+
+export function collectionPageJsonLd(args: {
+  name: string;
+  description: string;
+  url: string;
+  itemCount: number;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": args.name,
+    "description": args.description,
+    "url": `${SITE_URL}${args.url}`,
+    "inLanguage": "es-MX",
+    "isPartOf": { "@type": "WebSite", "name": SITE_NAME, "url": SITE_URL },
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": args.itemCount,
+    },
   };
 }
 

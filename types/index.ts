@@ -4,11 +4,21 @@
 
 export type CategorySlug = "ahorro" | "creditos" | "afore" | "ppr";
 
+export interface CategoryFaq {
+  question: string;
+  answer: string;
+}
+
 export interface Category {
   slug: CategorySlug;
   name: string;
   blurb: string;
   count: number;
+  seoTitle?: string;
+  seoDescription?: string;
+  introBody?: ArticleBlock[];
+  faq?: CategoryFaq[];
+  relatedTerms?: GlossaryTerm[];
 }
 
 export interface Author {

@@ -5,12 +5,18 @@ import Script from "next/script";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ArticleCard } from "@/components/ArticleCard";
+import { ArticleBody } from "@/components/ArticleBody";
 import {
   getAllCategories,
   getArticlesByCategory,
   getCategoryBySlug,
 } from "@/lib/articles";
-import { breadcrumbsJsonLd, SITE } from "@/lib/seo";
+import {
+  breadcrumbsJsonLd,
+  collectionPageJsonLd,
+  faqPageJsonLd,
+  SITE,
+} from "@/lib/seo";
 import { categoryName, formatDate, CATEGORY_BG, CATEGORY_COLOR_VAR } from "@/lib/format";
 import type { CategorySlug } from "@/types";
 
@@ -31,13 +37,17 @@ export async function generateMetadata(
   if (!cat) return {};
   const name = cat.name ?? "Categoría";
   const blurb = cat.blurb ?? "";
+  const title = cat.seoTitle ?? `${name} · ${cat.count} artículos`;
+  const description =
+    cat.seoDescription ??
+    `${blurb}. Artículos sobre ${name.toLowerCase()} explicados sin choros y para principiantes.`;
   return {
-    title: `${name} · ${cat.count} artículos`,
-    description: `${blurb}. Artículos sobre ${name.toLowerCase()} explicados sin choros y para principiantes.`,
+    title,
+    description,
     alternates: { canonical: `${SITE.url}/categorias/${cat.slug}` },
     openGraph: {
-      title: `${name} · Centavos`,
-      description: blurb,
+      title: cat.seoTitle ?? `${name} · Centavos`,
+      description: cat.seoDescription ?? blurb,
       url: `${SITE.url}/categorias/${cat.slug}`,
     },
   };
@@ -95,6 +105,13 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           </div>
         </header>
 
+        {/* Intro largo (SEO) */}
+        {cat.introBody && (
+          <section className="pt-7 pb-2">
+            <ArticleBody blocks={cat.introBody} />
+          </section>
+        )}
+
         {/* Lista de artículos */}
         <section className="px-4 pt-6">
           {articles.length === 0 ? (
@@ -141,6 +158,53 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           </section>
         )}
 
+        {/* FAQ */}
+        {cat.faq && cat.faq.length > 0 && (
+          <section className="px-4 pt-10">
+            <h2 className="font-display text-2xl font-extrabold tracking-[-0.022em] mb-4 px-1">
+              Preguntas frecuentes sobre {name.toLowerCase()}
+            </h2>
+            <div className="space-y-2">
+              {cat.faq.map((f, i) => (
+                <details
+                  key={i}
+                  className="bg-surface border border-rule rounded-2xl px-5 py-4 group"
+                >
+                  <summary className="font-display text-[16px] font-bold tracking-[-0.013em] cursor-pointer list-none flex items-center justify-between gap-3">
+                    <span>{f.question}</span>
+                    <span className="text-mandarina-deep text-xl leading-none group-open:rotate-45 transition-transform" aria-hidden>
+                      +
+                    </span>
+                  </summary>
+                  <p className="text-[14px] leading-relaxed mt-3 text-ink-soft">
+                    {f.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Términos relacionados (internal linking) */}
+        {cat.relatedTerms && cat.relatedTerms.length > 0 && (
+          <section className="px-4 pt-10">
+            <h2 className="font-display text-base font-extrabold tracking-[-0.013em] mb-3 px-1">
+              Términos relacionados
+            </h2>
+            <div className="grid grid-cols-2 gap-2">
+              {cat.relatedTerms.map((t) => (
+                <Link
+                  key={t.slug}
+                  href={`/glosario#${t.slug}`}
+                  className="bg-peach text-mandarina-deep rounded-2xl px-4 py-3 text-[13px] font-bold card-hover"
+                >
+                  {t.term}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Otras categorías */}
         {others.length > 0 && (
           <section className="bg-bg px-4 py-7 mt-8">
@@ -177,6 +241,27 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           ),
         }}
       />
+      <Script
+        id={`ld-cat-collection-${cat.slug}`}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            collectionPageJsonLd({
+              name,
+              description: cat.seoDescription ?? blurb,
+              url: `/categorias/${cat.slug}`,
+              itemCount: articles.length,
+            })
+          ),
+        }}
+      />
+      {cat.faq && cat.faq.length > 0 && (
+        <Script
+          id={`ld-cat-faq-${cat.slug}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageJsonLd(cat.faq)) }}
+        />
+      )}
     </>
   );
 }
