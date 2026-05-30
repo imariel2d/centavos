@@ -241,11 +241,13 @@ export async function saveGeneratedArticle(
     hero_image_caption: hero.caption ?? null,
     body: article.body ?? [],
     body_eli5: article.bodyEli5 ?? null,
-    // M2O reference by slug (Directus resolves it against the related
-    // `authors` collection). Fallback to Baguette if Claude omitted the
-    // author block — keeps the draft creatable rather than 4xx-ing on
-    // a null M2O.
-    author: { slug: article.author?.slug ?? "baguette" },
+    // Pin every generated draft to Baguette for now — the other authors
+    // (sofia-mendoza, diego-ramirez, ana-vargas) aren't ready to ship
+    // under their names yet, and we'd rather all daily drafts come in
+    // under one byline than 4xx on a missing M2O target. Swap to
+    // `article.author?.slug ?? "baguette"` once the other slugs are
+    // seeded in the `authors` collection.
+    author: { slug: "baguette" },
   };
 
   const res = await directusFetch<{ data: { id: number; slug: string } }>(
