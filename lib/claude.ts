@@ -243,7 +243,9 @@ export async function saveGeneratedArticle(
     body_eli5: article.bodyEli5 ?? null,
     // Fallback to Baguette if Claude omitted the author block — keeps
     // the draft creatable rather than 4xx-ing on a null M2O.
-    author: article.author?.slug ?? "baguette",
+    author: {
+      slug: 'baguette'
+    },
   };
 
   const res = await directusFetch<{ data: { id: number; slug: string } }>(
