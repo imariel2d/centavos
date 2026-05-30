@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Manrope, Caveat } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { organizationJsonLd, websiteJsonLd, SITE } from "@/lib/seo";
 import "./globals.css";
 
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-bg text-ink antialiased">
         {children}
         <Analytics />
+        <SpeedInsights />
 
         {/* JSON-LD raíz: organización + sitio */}
         <Script id="ld-organization" type="application/ld+json" strategy="afterInteractive"
