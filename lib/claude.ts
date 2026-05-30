@@ -241,11 +241,11 @@ export async function saveGeneratedArticle(
     hero_image_caption: hero.caption ?? null,
     body: article.body ?? [],
     body_eli5: article.bodyEli5 ?? null,
-    // Fallback to Baguette if Claude omitted the author block — keeps
-    // the draft creatable rather than 4xx-ing on a null M2O.
-    author: {
-      slug: 'baguette'
-    },
+    // M2O reference by slug (Directus resolves it against the related
+    // `authors` collection). Fallback to Baguette if Claude omitted the
+    // author block — keeps the draft creatable rather than 4xx-ing on
+    // a null M2O.
+    author: { slug: article.author?.slug ?? "baguette" },
   };
 
   const res = await directusFetch<{ data: { id: number; slug: string } }>(
