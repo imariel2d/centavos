@@ -65,6 +65,15 @@ services:
       CORS_ORIGIN: ${CORS_ORIGIN}
       TELEMETRY: "false"
 
+      # Allow the Directus admin to embed centavos.mx pages in the preview
+      # pane. Directus' default CSP is `frame-src 'self'`, so the admin
+      # iframe of /preview/articulos/<slug> on the public site gets blocked
+      # by Chrome with "This content is blocked." Overriding frame-src here
+      # extends it to include the public domain.
+      #
+      # `array:` is the Directus env parser's array coercer.
+      CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC: "array:'self',${PREVIEW_FRAME_SRC:-https://centavos.mx}"
+
       # ── Optional S3 storage ────────────────────────────────
       STORAGE_LOCATIONS: ${STORAGE_LOCATIONS:-local}
       STORAGE_S3_DRIVER: "s3"
