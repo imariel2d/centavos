@@ -128,3 +128,15 @@ export function collectionPageJsonLd(args: {
 }
 
 export const SITE = { url: SITE_URL, name: SITE_NAME };
+
+/**
+ * Turn a relative asset URL (e.g. `/api/cms/assets/abc`) into an absolute,
+ * 1200×630 cover-cropped JPG suitable for og:image / twitter:image.
+ * Directus does the transform on the fly and caches the result.
+ * Returns null when there's no source image.
+ */
+export function ogImageUrl(relativeUrl: string | undefined | null): string | null {
+  if (!relativeUrl) return null;
+  const sep = relativeUrl.includes("?") ? "&" : "?";
+  return `${SITE_URL}${relativeUrl}${sep}width=1200&height=630&fit=cover&format=jpg&quality=85`;
+}

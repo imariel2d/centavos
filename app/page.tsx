@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { SITE, ogImageUrl } from "@/lib/seo";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CategoryStrip } from "@/components/CategoryStrip";
@@ -24,6 +26,32 @@ import {
 } from "@/lib/articles";
 
 export const revalidate = 60; // ISR: revalida cada minuto
+
+export async function generateMetadata(): Promise<Metadata> {
+  // Same call as the page render — Next.js dedupes the fetch in one request.
+  const [hero] = await getLatestArticles(6);
+  const ogImage = ogImageUrl(hero?.heroImage.url);
+  if (!hero || !ogImage) return {}; // falls back to root layout's og-default.png
+
+  const alt = hero.heroImage.alt || hero.title;
+  return {
+    openGraph: {
+      type: "website",
+      locale: "es_MX",
+      url: SITE.url,
+      siteName: SITE.name,
+      title: "Centavos · Finanzas sin sustos para la banda",
+      description: "Blog financiero mexicano para jóvenes que apenas empiezan con la lana.",
+      images: [{ url: ogImage, width: 1200, height: 630, alt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Centavos · Finanzas sin sustos",
+      description: "Blog financiero mexicano sin choros.",
+      images: [ogImage],
+    },
+  };
+}
 
 export default async function HomePage() {
   const [articles, homePage, stories, categories] = await Promise.all([
