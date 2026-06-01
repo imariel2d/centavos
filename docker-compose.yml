@@ -36,7 +36,7 @@ services:
         condition: service_started
     environment:
       SECRET: "please-change-me-in-prod"
-      ADMIN_EMAIL: "admin@centavo.mx"
+      ADMIN_EMAIL: "admin@centavos.mx"
       ADMIN_PASSWORD: "admin"
 
       DB_CLIENT: "pg"
