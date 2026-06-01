@@ -170,4 +170,14 @@ export const HOME_PAGE: HomePageData = {
   ],
   trending: [ARTICLES[0], ARTICLES[1], ARTICLES[2], ARTICLES[3], ARTICLES[4]],
   moreArticles: [ARTICLES[1], ARTICLES[2], ARTICLES[3], ARTICLES[4], ARTICLES[5]],
+  ad: {
+    label: "Anuncio",
+    brand: "El Culto al Perro Café",
+    headline: "Café de especialidad tostado en lotes pequeños",
+    body: "Bolsas de 250g, grano entero o molido. Envío a todo México.",
+    cta: "Comprar ahora",
+    href: "https://elcultoalperrocafe.com/?ref=centavos",
+    imageUrl: "https://images.unsplash.com/photo-1559525839-d9acfd5b35a4?w=600&q=70",
+    imageAlt: "Bolsa de café El Culto al Perro Café",
+  },
 };

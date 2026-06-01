@@ -83,9 +83,22 @@ export interface HomeStarterStep {
   color: "peach" | "sand" | "sky";
 }
 
+/** Sponsored/affiliate slot rendered on the home page. */
+export interface HomeAd {
+  label: string;
+  brand: string;
+  headline: string;
+  body: string;
+  cta: string;
+  href: string;
+  imageUrl?: string;
+  imageAlt: string;
+}
+
 /** Curated content for the Home Page singleton in Directus. */
 export interface HomePageData {
   starterSteps: HomeStarterStep[];
   trending: Article[];
   moreArticles: Article[];
+  ad: HomeAd | null;
 }

@@ -4,6 +4,7 @@ import { CategoryStrip } from "@/components/CategoryStrip";
 import { HeroKicker } from "@/components/home/HeroKicker";
 import { FeaturedHero } from "@/components/home/FeaturedHero";
 import { EmpiezaPorAqui } from "@/components/home/EmpiezaPorAqui";
+import { HomeAd } from "@/components/home/HomeAd";
 import { Manifesto } from "@/components/home/Manifesto";
 import { LoNuevo } from "@/components/home/LoNuevo";
 import { Eli5Spotlight } from "@/components/home/Eli5Spotlight";
@@ -46,6 +47,7 @@ export default async function HomePage() {
           <CategoryStrip />
         </div>
         <EmpiezaPorAqui steps={homePage.starterSteps} />
+        {homePage.ad && <HomeAd ad={homePage.ad} />}
         <Manifesto />
         <LoNuevo articles={rest} />
         <Eli5Spotlight />

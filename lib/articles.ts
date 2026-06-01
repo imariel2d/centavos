@@ -23,6 +23,7 @@ import type {
   CategoryFaq,
   CategorySlug,
   GlossaryTerm,
+  HomeAd,
   HomePageData,
   HomeStarterStep,
   ImageRef,
@@ -326,6 +327,15 @@ interface DHomePage {
   starter_steps?: DJunctionRow[];
   trending?: DJunctionRow[];
   more_articles?: DJunctionRow[];
+  ad_enabled?: boolean | null;
+  ad_label?: string | null;
+  ad_brand?: string | null;
+  ad_headline?: string | null;
+  ad_body?: string | null;
+  ad_cta?: string | null;
+  ad_href?: string | null;
+  ad_image?: string | null;
+  ad_image_alt?: string | null;
 }
 
 const HOME_FIELDS = [
@@ -339,6 +349,15 @@ const HOME_FIELDS = [
   "more_articles.sort",
   "more_articles.articles_slug.*",
   "more_articles.articles_slug.author.*",
+  "ad_enabled",
+  "ad_label",
+  "ad_brand",
+  "ad_headline",
+  "ad_body",
+  "ad_cta",
+  "ad_href",
+  "ad_image",
+  "ad_image_alt",
 ].join(",");
 
 function isPublishedArticle(
@@ -364,20 +383,46 @@ function junctionToStarters(rows: DJunctionRow[] | undefined): HomeStarterStep[]
   }));
 }
 
+function mapHomeAd(row: DHomePage): HomeAd | null {
+  if (!row.ad_enabled) return null;
+  const brand = row.ad_brand?.trim();
+  const headline = row.ad_headline?.trim();
+  const href = row.ad_href?.trim();
+  if (!brand || !headline || !href) return null;
+  return {
+    label: row.ad_label?.trim() || "Anuncio",
+    brand,
+    headline,
+    body: row.ad_body?.trim() ?? "",
+    cta: row.ad_cta?.trim() || "Ver más",
+    href,
+    imageUrl: fileUrl(row.ad_image),
+    imageAlt: row.ad_image_alt?.trim() ?? "",
+  };
+}
+
+const EMPTY_HOME: HomePageData = {
+  starterSteps: [],
+  trending: [],
+  moreArticles: [],
+  ad: null,
+};
+
 export async function getHomePage(): Promise<HomePageData> {
   if (USE_MOCK_DATA) return MOCK_HOME_PAGE;
   try {
     const row = await directusOne<DHomePage>(
       `/items/home_page?fields=${HOME_FIELDS}`,
     );
-    if (!row) return { starterSteps: [], trending: [], moreArticles: [] };
+    if (!row) return EMPTY_HOME;
     return {
       starterSteps: junctionToStarters(row.starter_steps),
       trending: junctionToArticles(row.trending),
       moreArticles: junctionToArticles(row.more_articles),
+      ad: mapHomeAd(row),
     };
   } catch {
     // Collection may not exist yet — gracefully degrade.
-    return { starterSteps: [], trending: [], moreArticles: [] };
+    return EMPTY_HOME;
   }
 }

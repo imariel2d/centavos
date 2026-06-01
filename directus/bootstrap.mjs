@@ -250,6 +250,56 @@ async function run() {
   await addField("home_page", "trending",       { type: "alias", meta: { interface: "list-m2m", special: ["m2m"], options: { template: "{{articles_slug.title}}" } } });
   await addField("home_page", "more_articles",  { type: "alias", meta: { interface: "list-m2m", special: ["m2m"], options: { template: "{{articles_slug.title}}" } } });
 
+  // ── home_page ad slot (rendered below "Empieza por aquí") ────
+  await addField("home_page", "ad_divider", {
+    type: "alias",
+    meta: {
+      interface: "presentation-divider",
+      special: ["alias", "no-data"],
+      options: { title: "Anuncio (slot bajo «Empieza por aquí»)", color: "#FF8A4C" },
+      width: "full",
+    },
+  });
+  await addField("home_page", "ad_enabled", {
+    type: "boolean",
+    meta: { interface: "boolean", width: "half", note: "Mostrar el anuncio en la home" },
+    schema: { default_value: false, is_nullable: false },
+  });
+  await addField("home_page", "ad_label", {
+    type: "string",
+    meta: { interface: "input", width: "half", note: "Etiqueta visible (ej. «Anuncio», «Patrocinado»)" },
+    schema: { default_value: "Anuncio" },
+  });
+  await addField("home_page", "ad_brand", {
+    type: "string",
+    meta: { interface: "input", width: "half", note: "Marca / anunciante" },
+  });
+  await addField("home_page", "ad_cta", {
+    type: "string",
+    meta: { interface: "input", width: "half", note: "Texto del botón (ej. «Comprar ahora»)" },
+  });
+  await addField("home_page", "ad_headline", {
+    type: "string",
+    meta: { interface: "input", width: "full", note: "Título del anuncio" },
+  });
+  await addField("home_page", "ad_body", {
+    type: "text",
+    meta: { interface: "input-multiline", width: "full", note: "Descripción corta" },
+  });
+  await addField("home_page", "ad_href", {
+    type: "string",
+    meta: { interface: "input", width: "full", note: "URL de afiliado / destino" },
+  });
+  await addField("home_page", "ad_image", {
+    type: "uuid",
+    meta: { interface: "file-image", display: "image", special: ["file"], width: "half" },
+    schema: { foreign_key_table: "directus_files" },
+  });
+  await addField("home_page", "ad_image_alt", {
+    type: "string",
+    meta: { interface: "input", width: "half", note: "Texto alternativo de la imagen" },
+  });
+
   // newsletter_subscribers (double opt-in via Resend)
   await createSubscribersCollection();
   await addField("newsletter_subscribers", "email", {
@@ -293,6 +343,7 @@ async function run() {
   await ensureRelation({ collection: "articles",       field: "category", related: "categories" });
   await ensureRelation({ collection: "articles",       field: "author",   related: "authors" });
   await ensureRelation({ collection: "articles",       field: "hero_image", related: "directus_files" });
+  await ensureRelation({ collection: "home_page",      field: "ad_image",   related: "directus_files" });
 
   // Register M2M relations for home_page
   // starter_steps
