@@ -7,6 +7,7 @@ import { HeroKicker } from "@/components/home/HeroKicker";
 import { FeaturedHero } from "@/components/home/FeaturedHero";
 import { EmpiezaPorAqui } from "@/components/home/EmpiezaPorAqui";
 import { HomeAd } from "@/components/home/HomeAd";
+import { EditorialDisclaimer } from "@/components/EditorialDisclaimer";
 import { Manifesto } from "@/components/home/Manifesto";
 import { LoNuevo } from "@/components/home/LoNuevo";
 import { Eli5Spotlight } from "@/components/home/Eli5Spotlight";
@@ -78,6 +79,9 @@ export default async function HomePage() {
         {homePage.ad && <HomeAd ad={homePage.ad} />}
         <Manifesto />
         <LoNuevo articles={rest} />
+        <div className="mx-auto max-w-screen-md">
+          <EditorialDisclaimer />
+        </div>
         <Eli5Spotlight />
         <CalculatorPreview />
         {homePage.trending.length > 0 && <TrendingList articles={homePage.trending} />}

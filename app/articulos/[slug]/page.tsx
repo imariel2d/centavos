@@ -9,6 +9,7 @@ import { ArticleShell } from "@/components/ArticleShell";
 import { ArticleCard } from "@/components/ArticleCard";
 import { DebugLog } from "@/components/DebugLog";
 import { HomeAd } from "@/components/home/HomeAd";
+import { EditorialDisclaimer } from "@/components/EditorialDisclaimer";
 import {
   getAllArticles,
   getArticleBySlug,
@@ -130,6 +131,8 @@ export default async function ArticlePage({
             </div>
           </section>
         )}
+
+        <EditorialDisclaimer />
       </main>
 
       <Footer />
