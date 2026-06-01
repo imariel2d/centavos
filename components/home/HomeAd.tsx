@@ -2,7 +2,14 @@
 import { track } from "@vercel/analytics";
 import type { HomeAd as HomeAdData } from "@/types";
 
-export function HomeAd({ ad }: { ad: HomeAdData }) {
+export function HomeAd({
+  ad,
+  placement = "home_below_starter",
+}: {
+  ad: HomeAdData;
+  /** Where this ad is rendered — used as a property on the analytics event so CTR can be split by slot. */
+  placement?: string;
+}) {
   const { label, brand, headline, body, cta, href, imageUrl, imageAlt } = ad;
   return (
     <section className="mx-auto max-w-screen-md px-5 pt-6 md:pt-8">
@@ -18,7 +25,7 @@ export function HomeAd({ ad }: { ad: HomeAdData }) {
         href={href}
         target="_blank"
         rel="sponsored noopener noreferrer"
-        onClick={() => track("home_ad_click", { brand, href, placement: "home_below_starter" })}
+        onClick={() => track("ad_click", { brand, href, placement })}
         className="card-hover block overflow-hidden rounded-2xl border border-rule bg-surface"
       >
         <div className="flex items-stretch gap-4">

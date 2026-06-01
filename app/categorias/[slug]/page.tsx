@@ -6,10 +6,12 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ArticleCard } from "@/components/ArticleCard";
 import { ArticleBody } from "@/components/ArticleBody";
+import { HomeAd } from "@/components/home/HomeAd";
 import {
   getAllCategories,
   getArticlesByCategory,
   getCategoryBySlug,
+  getHomeAd,
 } from "@/lib/articles";
 import {
   breadcrumbsJsonLd,
@@ -58,8 +60,11 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
   const cat = await getCategoryBySlug(slug);
   if (!cat) notFound();
 
-  const articles = await getArticlesByCategory(slug as CategorySlug);
-  const allCategories = await getAllCategories();
+  const [articles, allCategories, ad] = await Promise.all([
+    getArticlesByCategory(slug as CategorySlug),
+    getAllCategories(),
+    getHomeAd(),
+  ]);
   const others = allCategories.filter((c) => c.slug !== cat.slug);
   const catIndex = allCategories.findIndex((c) => c.slug === cat.slug);
 
@@ -124,6 +129,8 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
             </div>
           )}
         </section>
+
+        {ad && <HomeAd ad={ad} placement="category_below_grid" />}
 
         {/* Lista en formato horizontal */}
         {articles.length > 1 && (

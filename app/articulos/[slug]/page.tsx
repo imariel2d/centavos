@@ -8,12 +8,14 @@ import { Footer } from "@/components/Footer";
 import { ArticleShell } from "@/components/ArticleShell";
 import { ArticleCard } from "@/components/ArticleCard";
 import { DebugLog } from "@/components/DebugLog";
+import { HomeAd } from "@/components/home/HomeAd";
 import {
   getAllArticles,
   getArticleBySlug,
+  getHomeAd,
   getRelatedArticles,
 } from "@/lib/articles";
-import { articleJsonLd, breadcrumbsJsonLd, SITE } from "@/lib/seo";
+import { articleJsonLd, breadcrumbsJsonLd, ogImageUrl, SITE } from "@/lib/seo";
 import { categoryName, formatDate } from "@/lib/format";
 
 export const revalidate = 3600;
@@ -34,6 +36,12 @@ export async function generateMetadata(
   if (!article) return {};
 
   const url = `${SITE.url}/articulos/${article.slug}`;
+  const ogImage = ogImageUrl(article.heroImage.url);
+  const imageAlt = article.heroImage.alt || article.title;
+  const image = ogImage
+    ? { url: ogImage, width: 1200, height: 630, alt: imageAlt }
+    : { url: `${SITE.url}/og-default.png`, width: 1200, height: 630, alt: article.title };
+
   return {
     title: article.title,
     description: article.excerpt,
@@ -47,14 +55,13 @@ export async function generateMetadata(
       publishedTime: article.publishedAt,
       authors: [article.author.name],
       section: categoryName(article.category),
-      images: article.heroImage.url
-        ? [{ url: `${SITE.url}${article.heroImage.url}`, alt: article.heroImage.alt }]
-        : [{ url: `${SITE.url}/og-default.png`, width: 1200, height: 630, alt: article.title }],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
       description: article.excerpt,
+      images: [image.url],
     },
   };
 }
@@ -69,7 +76,10 @@ export default async function ArticlePage({
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const related = await getRelatedArticles(slug, 2);
+  const [related, ad] = await Promise.all([
+    getRelatedArticles(slug, 2),
+    getHomeAd(),
+  ]);
   const categorySlug = article.category;
   const catName = categoryName(categorySlug);
   const publishedLabel = `${formatDate(article.publishedAt)} · ⏱ ${article.readMinutes} min`;
@@ -104,6 +114,8 @@ export default async function ArticlePage({
             slug={article.slug}
           />
         </Suspense>
+
+        {ad && <HomeAd ad={ad} placement="article_below_body" />}
 
         {/* Related */}
         {related.length > 0 && (

@@ -408,6 +408,24 @@ const EMPTY_HOME: HomePageData = {
   ad: null,
 };
 
+const HOME_AD_FIELDS = [
+  "ad_enabled", "ad_label", "ad_brand", "ad_headline",
+  "ad_body", "ad_cta", "ad_href", "ad_image", "ad_image_alt",
+].join(",");
+
+/** Fetches just the ad slot — for pages that don't need the rest of the home payload. */
+export async function getHomeAd(): Promise<HomeAd | null> {
+  if (USE_MOCK_DATA) return MOCK_HOME_PAGE.ad;
+  try {
+    const row = await directusOne<DHomePage>(
+      `/items/home_page?fields=${HOME_AD_FIELDS}`,
+    );
+    return row ? mapHomeAd(row) : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function getHomePage(): Promise<HomePageData> {
   if (USE_MOCK_DATA) return MOCK_HOME_PAGE;
   try {
