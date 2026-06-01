@@ -1,3 +1,5 @@
+"use client";
+import { track } from "@vercel/analytics";
 import type { HomeAd as HomeAdData } from "@/types";
 
 export function HomeAd({ ad }: { ad: HomeAdData }) {
@@ -16,6 +18,7 @@ export function HomeAd({ ad }: { ad: HomeAdData }) {
         href={href}
         target="_blank"
         rel="sponsored noopener noreferrer"
+        onClick={() => track("home_ad_click", { brand, href, placement: "home_below_starter" })}
         className="card-hover block overflow-hidden rounded-2xl border border-rule bg-surface"
       >
         <div className="flex items-stretch gap-4">
