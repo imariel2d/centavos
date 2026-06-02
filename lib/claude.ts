@@ -1,6 +1,6 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
-import { directusFetch } from "@/lib/directus";
+import { directusFetch, directusOne } from "@/lib/directus";
 
 // Single shared client. Reads ANTHROPIC_API_KEY from env automatically.
 let _client: Anthropic | null = null;
@@ -92,6 +92,13 @@ Este blog publica un artículo diario, así que tú eliges el tema en cada corri
 - El \`slug\` debe ser kebab-case descriptivo y único.
 `.trim();
 
+export type RecentArticleRef = {
+  slug: string;
+  title: string;
+  category: string;
+  publishedAt: string;
+};
+
 /**
  * The user message paired with the system prompt. Two modes:
  *   - explicit topic → write about that topic
@@ -99,28 +106,41 @@ Este blog publica un artículo diario, así que tú eliges el tema en cada corri
  *
  * `date` is the YYYY-MM-DD the article should be stamped with — always the
  * caller's current date; not user-supplied.
+ *
+ * `recentArticles` is injected so Claude knows what has already been published
+ * and avoids repeating slugs, themes, or over-concentrating on one category.
  */
-export const buildArticlePrompt = (date: string, topic?: string): string => {
+export const buildArticlePrompt = (
+  date: string,
+  topic?: string,
+  recentArticles: RecentArticleRef[] = [],
+): string => {
+  const recentBlock =
+    recentArticles.length > 0
+      ? `## Artículos ya publicados (NO repetir tema, slug ni saturar una categoría)\n${recentArticles
+          .map(
+            (a) =>
+              `- [${a.publishedAt}] (${a.category}) "${a.title}" → slug: ${a.slug}`,
+          )
+          .join("\n")}\n\n`
+      : "";
+
   if (topic && topic.trim()) {
-    return `
-Escribe un artículo para el blog Centavo sobre el siguiente tema:
+    return `${recentBlock}Escribe un artículo para el blog Centavo sobre el siguiente tema:
 
 Tema: ${topic.trim()}
 Fecha de publicación: ${date}
 
-Recuerda: responde ÚNICAMENTE con el objeto JSON. Sin texto adicional, sin markdown.
-`.trim();
+Recuerda: responde ÚNICAMENTE con el objeto JSON. Sin texto adicional, sin markdown.`.trim();
   }
 
-  return `
-Escribe el artículo de hoy para el blog Centavo. Tú decides el tema.
+  return `${recentBlock}Escribe el artículo de hoy para el blog Centavo. Tú decides el tema.
 
 Fecha de publicación: ${date}
 
 Sigue las reglas de "Cómo elegir el tema" del system prompt — sé específico, varía categoría, y elige al autor que corresponda.
 
-Recuerda: responde ÚNICAMENTE con el objeto JSON. Sin texto adicional, sin markdown.
-`.trim();
+Recuerda: responde ÚNICAMENTE con el objeto JSON. Sin texto adicional, sin markdown.`.trim();
 };
 
 // ── Generation ──────────────────────────────────────────────────────────
@@ -163,6 +183,28 @@ export async function generateArticle(
   const date = opts.publishedAt ?? new Date().toISOString().slice(0, 10);
   const client = anthropic();
 
+  // Fetch the last 20 articles to inject into the user prompt so Claude avoids
+  // repeating themes, slugs, or over-concentrating on one category.
+  // Non-fatal: if Directus is unreachable we proceed without the context.
+  let recentArticles: RecentArticleRef[] = [];
+  try {
+    const res = await directusFetch<{
+      data: { slug: string; title: string; category: string; published_at: string }[];
+    }>(
+      "/items/articles?fields=slug,title,category,published_at&sort[]=-published_at&limit=20",
+      { cache: "no-store" },
+    );
+    recentArticles = res.data.map((a) => ({
+      slug: a.slug,
+      title: a.title,
+      category: a.category,
+      publishedAt: a.published_at,
+    }));
+    console.log(`[generateArticle] injecting ${recentArticles.length} recent articles into prompt`);
+  } catch (err) {
+    console.warn("[generateArticle] could not fetch recent articles for dedup context", err);
+  }
+
   // System prompt is frozen → marked for caching. On first call this writes
   // the cache (~1.25× cost); subsequent calls inside the 5-minute TTL read
   // it at ~0.1× cost. Note: Opus 4.8 has a 4096-token min cacheable prefix,
@@ -181,7 +223,7 @@ export async function generateArticle(
       },
     ],
     messages: [
-      { role: "user", content: buildArticlePrompt(date, opts.topic) },
+      { role: "user", content: buildArticlePrompt(date, opts.topic, recentArticles) },
     ],
   });
 
@@ -226,6 +268,17 @@ export type SavedArticleRef = {
 export async function saveGeneratedArticle(
   article: GeneratedArticle,
 ): Promise<SavedArticleRef> {
+  // Guard against duplicate slugs — Directus would 4xx but we'd have already
+  // burned the Claude tokens. Better to fail early with a clear message.
+  const existing = await directusOne<{ id: number; slug: string }>(
+    `/items/articles?filter[slug][_eq]=${encodeURIComponent(article.slug)}&fields=id,slug&limit=1`,
+  );
+  if (existing) {
+    throw new Error(
+      `Slug already exists: "${article.slug}" (id=${existing.id}). Skipping save to avoid duplicate.`,
+    );
+  }
+
   const hero = article.heroImage ?? { alt: "" };
 
   const payload = {
