@@ -6,6 +6,9 @@ import {
 } from "@/lib/articles";
 import { SITE } from "@/lib/seo";
 
+// Re-generate at most once per hour — avoids hitting Directus on every crawl.
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, categories, latestByCategory] = await Promise.all([
     getAllArticles(),
@@ -33,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const articleRoutes: MetadataRoute.Sitemap = articles.map((a) => ({
     url: `${SITE.url}/articulos/${a.slug}`,
-    lastModified: new Date(a.publishedAt),
+    lastModified: new Date(a.updatedAt ?? a.publishedAt),
     changeFrequency: "monthly",
     priority: 0.8,
   }));

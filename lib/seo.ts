@@ -46,11 +46,10 @@ export function articleJsonLd(article: Article) {
       ? [article.heroImage.url]
       : [`${SITE_URL}/og/${article.slug}.png`],
     "datePublished": article.publishedAt,
-    "dateModified": article.publishedAt,
+    "dateModified": article.updatedAt ?? article.publishedAt,
     "author": {
       "@type": "Person",
       "name": article.author.name,
-      "url": `${SITE_URL}/autor/${article.author.slug}`,
     },
     "publisher": {
       "@type": "Organization",

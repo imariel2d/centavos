@@ -56,6 +56,7 @@ export interface Article {
   category: CategorySlug;
   author: Author;
   publishedAt: string;    // ISO 8601
+  updatedAt?: string;     // ISO 8601 — Directus date_updated; undefined when never edited
   readMinutes: number;
   heroImage: ImageRef;
   body: ArticleBlock[];

@@ -56,6 +56,7 @@ interface DArticle {
   category: CategorySlug;
   author: DAuthor | string;
   published_at: string;
+  date_updated: string | null;  // Directus system field
   read_minutes: number;
   hero_image: string | null;
   hero_image_alt: string | null;
@@ -97,6 +98,7 @@ const mapArticle = (a: Row<DArticle>): Article => ({
   category: a.category,
   author: resolveAuthor(a.author),
   publishedAt: a.published_at ?? new Date().toISOString(),
+  updatedAt: a.date_updated ?? undefined,
   readMinutes: a.read_minutes ?? 0,
   heroImage: mapHero(a),
   body: Array.isArray(a.body) ? a.body : [],
