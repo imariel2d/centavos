@@ -7,7 +7,7 @@ export function HeroKicker({ edition = 24 }: { edition?: number }) {
         Edición #{String(edition).padStart(3, "0")} · {formatDate(new Date().toISOString())}
       </div>
       <h1 className="font-display text-[44px] md:text-[68px] font-extrabold tracking-[-0.045em] leading-[0.92] mb-3.5">
-        Tu lana,<br />
+        Tu dinero,<br />
         <span className="text-mandarina italic">sin sustos</span>.
       </h1>
       <p className="text-[15px] md:text-lg leading-relaxed text-ink-soft">
