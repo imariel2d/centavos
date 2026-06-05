@@ -6,7 +6,7 @@ import type { Article } from "@/types";
 export function TrendingList({ articles }: { articles: Article[] }) {
   return (
     <section className="mx-auto max-w-screen-md px-5 pt-10 md:pt-14">
-      <SectionHead kicker="🔥 Trending" title="Lo que la banda está leyendo" />
+      <SectionHead kicker="🔥 Trending" title="Lo que se está leyendo" />
       <ol className="mt-3 divide-y divide-rule">
         {articles.map((a, i) => (
           <li key={a.slug}>

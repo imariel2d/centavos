@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: "es_MX",
       url: SITE.url,
       siteName: SITE.name,
-      title: "Centavos · Finanzas sin sustos para la banda",
+      title: "Centavos · Finanzas sin sustos",
       description: "Blog financiero mexicano para jóvenes que apenas empiezan con la lana.",
       images: [{ url: ogImage, width: 1200, height: 630, alt }],
     },

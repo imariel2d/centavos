@@ -8,7 +8,7 @@ import { getAllAuthors, getArticleCount } from "@/lib/articles";
 
 export const metadata: Metadata = {
   title: "Acerca de · Quiénes somos",
-  description: "Centavo es una publicación independiente mexicana. Nuestra misión: ayudar a la banda a perderle el miedo a las finanzas.",
+  description: "Centavos es una publicación independiente mexicana. Nuestra misión: ayudar a la gente a perderle el miedo a las finanzas.",
   alternates: { canonical: `${SITE.url}/nosotros` },
   openGraph: {
     title: "Acerca de Centavo",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 const MANIFESTO = [
-  { n: "01", t: "Nadie nace sabiendo", d: "Las finanzas no se enseñan en la escuela. Aquí intentamos arreglar eso, sin choros y sin venderte productos.", c: "bg-peach" },
+  { n: "01", t: "Nadie nace sabiendo", d: "Las finanzas no se enseñan en la escuela.", c: "bg-peach" },
   { n: "02", t: "El miedo viene del lenguaje", d: "Si te lo explican en chino, parece imposible. Si te lo explican en cristiano, es bastante manejable.", c: "bg-sand" },
   { n: "03", t: "Cero comisiones, cero recetas", d: "No te vamos a vender que en 6 meses estarás retirado. Eso es mentira. Te vamos a decir lo que sí funciona.", c: "bg-sky" },
 ];
@@ -48,8 +48,8 @@ export default async function AboutPage() {
         <section className="px-6 pt-7 pb-7">
           <div className="font-hand text-3xl text-mandarina-deep leading-none mb-2">quiénes somos</div>
           <h1 className="font-display text-[40px] md:text-[64px] font-extrabold tracking-[-0.05em] leading-[0.95] mb-5">
-            Le ayudamos a la banda a<br />
-            <span className="text-mandarina italic">perderle el miedo</span> a la lana.
+            Le ayudamos a la gente a<br />
+            <span className="text-mandarina italic">perderle el miedo</span> al dinero.
           </h1>
           <p className="text-[15px] md:text-base leading-relaxed text-ink-soft max-w-prose">
             Centavo es una publicación independiente, hecha en México, para mexicanas y mexicanos jóvenes que sienten que las finanzas son para otros. Spoiler: no lo son.

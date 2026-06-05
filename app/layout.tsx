@@ -36,11 +36,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Centavos · Finanzas sin sustos para la banda",
+    default: "Centavos · Finanzas sin sustos para la gente",
     template: "%s · Centavos",
   },
   description:
-    "Blog financiero mexicano. Le ayudamos a la banda joven a perderle el miedo a la lana. Sin choros, sin tecnicismos.",
+    "Blog financiero mexicano. Le ayudamos a la gente a perderle el miedo al dinero. Sin choros, sin tecnicismos.",
   keywords: [
     "finanzas personales", "México", "ahorro", "AFORE",
     "PPR", "Buró de Crédito", "tarjeta de crédito", "inversión",
@@ -55,8 +55,8 @@ export const metadata: Metadata = {
     locale: "es_MX",
     url: SITE.url,
     siteName: SITE.name,
-    title: "Centavos · Finanzas sin sustos para la banda",
-    description: "Blog financiero mexicano para jóvenes que apenas empiezan con la lana.",
+    title: "Centavos · Finanzas sin sustos para la gente",
+    description: "Blog financiero mexicano para jóvenes que apenas empiezan con el dinero.",
     images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "Centavos" }],
   },
   twitter: {

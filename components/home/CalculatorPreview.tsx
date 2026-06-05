@@ -27,7 +27,7 @@ export function CalculatorPreview() {
     <section className="mx-auto max-w-screen-md px-4 pt-6">
       <div className="bg-ink text-bg rounded-3xl px-6 py-7">
         <h3 className="font-display text-2xl font-extrabold tracking-[-0.022em] mb-1.5 leading-none">
-          ¿Cuánto crece tu lana?
+          ¿Cuánto crece tu dinero?
         </h3>
         <p className="text-[13px] opacity-70 mb-5">Mueve la barra y te decimos.</p>
 

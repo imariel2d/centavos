@@ -17,7 +17,7 @@ export function organizationJsonLd() {
       // "https://twitter.com/centavo_mx",
       // "https://instagram.com/centavos.mx",
     ],
-    "description": "Blog financiero mexicano: le ayudamos a la banda a perderle el miedo a la lana.",
+    "description": "Blog financiero mexicano: le ayudamos a la gente a perderle el miedo al dinero.",
   };
 }
 

@@ -31,7 +31,7 @@ export function Footer() {
       <div className="mx-auto max-w-screen-lg px-5 py-10 md:py-14">
         <Logo size={30} color="var(--color-bg)" dotColor="var(--color-mandarina)" />
         <p className="font-hand text-mandarina text-2xl mt-4 mb-2">
-          Le ayudamos a la banda a perderle el miedo a las finanzas.
+          Le ayudamos a la gente a perderle el miedo a las finanzas.
         </p>
 
         <div className="grid grid-cols-2 gap-6 mt-8">

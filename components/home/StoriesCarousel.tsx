@@ -7,7 +7,7 @@ export function StoriesCarousel({ stories }: { stories: Story[] }) {
   return (
     <section className="pt-10 md:pt-14">
       <div className="mx-auto max-w-screen-md px-5">
-        <SectionHead kicker="Historias reales" title="La banda nos cuenta" />
+        <SectionHead kicker="Historias reales" title="La gente nos cuenta" />
       </div>
       {/* Mobile: swipeable row. Desktop: grid (no horizontal scroll). */}
       <div
