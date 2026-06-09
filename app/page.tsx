@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AppStoreBadges } from "@/components/home/AppStoreBadges";
 import { PhoneFrame, PulsoMock, AnotarMock, SuscripcionesMock } from "@/components/home/PhoneMock";
+import { getAppLinks } from "@/lib/articles";
 import { SITE } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -32,10 +33,14 @@ const STEPS = [
 
 const TRUST = ["No se conecta a tu banco", "Nunca toca tu dinero", "Tus datos son tuyos", "Hecho en México 🇲🇽"];
 
-export default function AppPage() {
+export const revalidate = 60; // ISR: recoge cambios de links desde Directus
+
+export default async function AppPage() {
+  const { storeUrl, playUrl } = await getAppLinks();
+
   return (
     <>
-      <Header />
+      <Header variant="minimal" />
 
       <main>
         {/* HERO */}
@@ -57,7 +62,7 @@ export default function AppPage() {
               <p className="text-[16px] md:text-lg leading-relaxed text-ink-soft max-w-md mb-7">
                 Centavos es un cuaderno, no un banco. Anotas lo que gastas, lo que ahorras y lo que pagas — y por fin ves a dónde se va tu dinero. <b className="text-ink">Sin conectar tu banco. Sin sermones.</b>
               </p>
-              <AppStoreBadges />
+              <AppStoreBadges storeUrl={storeUrl} playUrl={playUrl} />
               {/*<div className="flex items-center gap-3 mt-6">*/}
               {/*  <div className="flex -space-x-2">*/}
               {/*    {["bg-mandarina", "bg-yolk", "bg-sky", "bg-peach"].map((c) => (*/}
@@ -218,7 +223,7 @@ export default function AppPage() {
               <p className="text-[15px] md:text-lg leading-relaxed mb-7 opacity-90">
                 Descarga Centavos gratis y empieza a anotar hoy. Tu yo del futuro te lo va a agradecer.
               </p>
-              <AppStoreBadges />
+              <AppStoreBadges storeUrl={storeUrl} playUrl={playUrl} />
             </div>
           </div>
         </section>

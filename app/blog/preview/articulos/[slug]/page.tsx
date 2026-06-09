@@ -38,7 +38,7 @@ export default async function PreviewArticlePage({
         <nav aria-label="Breadcrumb" className="px-4 pt-4 text-[11px] text-ink-soft flex items-center gap-1.5">
           <Link href="/" className="hover:text-ink">Inicio</Link>
           <span aria-hidden>›</span>
-          <Link href={`/categorias/${article.category}`} className="hover:text-ink">{catName}</Link>
+          <Link href={`/app/blog/categorias/${article.category}`} className="hover:text-ink">{catName}</Link>
           <span aria-hidden>›</span>
           <span className="text-ink truncate max-w-[60%]">{article.short}</span>
         </nav>

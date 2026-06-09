@@ -4,7 +4,7 @@ import Link from "next/link";
 import { PhoneFrame, PulsoMock } from "./PhoneMock";
 import { AppStoreBadges } from "./AppStoreBadges";
 
-export function AppPromo() {
+export function AppPromo({ storeUrl, playUrl }: { storeUrl?: string; playUrl?: string }) {
   return (
     <section className="mx-auto max-w-screen-md px-4 pt-10 md:pt-14">
       <div className="bg-ink text-bg rounded-3xl px-6 md:px-10 py-8 md:py-10 relative overflow-hidden">
@@ -20,7 +20,7 @@ export function AppPromo() {
               No solo leemos de lana, también te ayudamos a cuidarla. Anota tus gastos, arma tus bolsas y llena tus alcancías — sin conectar tu banco.
             </p>
             <div className="flex flex-wrap items-center gap-3">
-              <AppStoreBadges variant="light" />
+              <AppStoreBadges variant="light" storeUrl={storeUrl} playUrl={playUrl} />
               <Link href="/app" className="text-[13px] font-bold text-yolk inline-flex items-center gap-1.5">
                 Conoce la app
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>

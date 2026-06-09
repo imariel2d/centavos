@@ -2,19 +2,31 @@ import Link from "next/link";
 import { Logo } from "./Logo";
 import { MobileMenu } from "./MobileMenu";
 
-export function Header() {
+export function Header({ variant = "full" }: { variant?: "full" | "minimal" }) {
+  if (variant === "minimal") {
+    // Landing de la app: solo logo y enlace al blog.
+    return (
+      <header className="sticky top-0 z-30 bg-bg/95 backdrop-blur-sm relative">
+        <div className="mx-auto max-w-screen-lg flex items-center justify-between px-4 py-3">
+          <Logo size={26} />
+          <Link href="/blog" className="text-sm font-semibold hover:text-mandarina-deep">
+            Blog
+          </Link>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="sticky top-0 z-30 bg-bg/95 backdrop-blur-sm relative">
       <div className="mx-auto max-w-screen-lg flex items-center justify-between px-4 py-3">
         <Logo size={26} />
         <nav className="hidden md:flex items-center gap-7 text-sm font-semibold">
-          <Link href="/blog"                className="hover:text-mandarina-deep">Blog</Link>
-          <Link href="/categorias/ahorro"   className="hover:text-mandarina-deep">Ahorro</Link>
-          <Link href="/categorias/creditos" className="hover:text-mandarina-deep">Créditos</Link>
-          <Link href="/categorias/afore"    className="hover:text-mandarina-deep">AFORE</Link>
-          <Link href="/categorias/ppr"      className="hover:text-mandarina-deep">PPR</Link>
-          <Link href="/glosario"            className="hover:text-mandarina-deep">Glosario</Link>
-          <Link href="/nosotros"            className="hover:text-mandarina-deep">Nosotros</Link>
+          <Link href="/blog/categorias/ahorro" className="hover:text-mandarina-deep">Ahorro</Link>
+          <Link href="/blog/categorias/creditos" className="hover:text-mandarina-deep">Créditos</Link>
+          <Link href="/blog/categorias/afore" className="hover:text-mandarina-deep">AFORE</Link>
+          <Link href="/blog/categorias/ppr" className="hover:text-mandarina-deep">PPR</Link>
+          <Link href="/blog/glosario"            className="hover:text-mandarina-deep">Glosario</Link>
         </nav>
         <div className="flex items-center gap-2">
           <Link

@@ -15,7 +15,7 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
           return (
             <Link
               key={c.slug}
-              href={`/categorias/${c.slug}`}
+              href={`/app/blog/categorias/${c.slug}`}
               className={`${bg} card-hover rounded-3xl px-4 py-5 min-h-[130px] flex flex-col justify-between text-ink`}
             >
               <div className="font-display text-2xl md:text-3xl font-extrabold tracking-[-0.04em] leading-none">{c.name}</div>

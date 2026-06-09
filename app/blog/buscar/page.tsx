@@ -107,7 +107,7 @@ export default async function SearchPage({
                   return (
                     <Link
                       key={c.slug}
-                      href={`/categorias/${c.slug}`}
+                      href={`/app/blog/categorias/${c.slug}`}
                       className={`${bgs[i]} card-hover rounded-3xl px-4 py-5 min-h-[130px] flex flex-col justify-between ${isOrange ? "text-bg" : "text-ink"}`}
                     >
                       <div className="font-display text-2xl font-extrabold tracking-[-0.04em] leading-none">{c.name}</div>
@@ -126,7 +126,7 @@ export default async function SearchPage({
               <ol className="divide-y divide-rule">
                 {trending.map((a, i) => (
                   <li key={a.slug}>
-                    <Link href={`/articulos/${a.slug}`} className="flex gap-3 py-3 items-center">
+                    <Link href={`/app/blog/articulos/${a.slug}`} className="flex gap-3 py-3 items-center">
                       <span className="w-8 h-8 rounded-full bg-mandarina text-bg grid place-items-center font-display font-extrabold text-[14px] flex-shrink-0">
                         {i + 1}
                       </span>
@@ -199,7 +199,7 @@ export default async function SearchPage({
                     <ul className="divide-y divide-rule">
                       {results.slice(1).map((a, i) => (
                         <li key={a.slug}>
-                          <Link href={`/articulos/${a.slug}`} className="flex gap-3.5 py-3.5 items-start">
+                          <Link href={`/app/blog/articulos/${a.slug}`} className="flex gap-3.5 py-3.5 items-start">
                             <div
                               className="w-14 h-14 rounded-xl flex-shrink-0"
                               style={{ background: ["var(--color-peach)", "var(--color-sand)", "var(--color-sky)"][i % 3] }}

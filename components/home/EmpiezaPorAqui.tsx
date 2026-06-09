@@ -13,7 +13,7 @@ export function EmpiezaPorAqui({ steps }: { steps: HomeStarterStep[] }) {
         {steps.map((s, i) => (
           <Link
             key={s.article.slug}
-            href={`/articulos/${s.article.slug}`}
+            href={`/app/blog/articulos/${s.article.slug}`}
             className={`${CATEGORY_BG[s.article.category] ?? "bg-peach"} card-hover flex items-center gap-4 rounded-2xl px-5 py-4`}
           >
             <span className="font-display text-2xl font-extrabold tracking-[-0.04em] text-ink/40 leading-none">

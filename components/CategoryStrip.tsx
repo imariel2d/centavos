@@ -14,7 +14,7 @@ export async function CategoryStrip({ active }: { active?: CategorySlug }) {
         return (
           <Link
             key={c.slug}
-            href={`/categorias/${c.slug}`}
+            href={`/app/blog/categorias/${c.slug}`}
             className={`px-4 py-2 rounded-full text-[13px] font-semibold whitespace-nowrap flex-shrink-0 ${
               isActive
                 ? "bg-ink text-bg"

@@ -467,6 +467,27 @@ const HOME_AD_FIELDS = [
   "ad_body", "ad_cta", "ad_href", "ad_image", "ad_image_alt",
 ].join(",");
 
+/** Store links de la app — independientes de app_enabled (el landing siempre los quiere). */
+export async function getAppLinks(): Promise<{ storeUrl?: string; playUrl?: string }> {
+  if (USE_MOCK_DATA) {
+    return {
+      storeUrl: MOCK_HOME_PAGE.app?.storeUrl,
+      playUrl: MOCK_HOME_PAGE.app?.playUrl,
+    };
+  }
+  try {
+    const row = await directusOne<DHomePage>(
+      `/items/home_page?fields=app_store_url,app_play_url`,
+    );
+    return {
+      storeUrl: row?.app_store_url?.trim() || undefined,
+      playUrl: row?.app_play_url?.trim() || undefined,
+    };
+  } catch {
+    return {};
+  }
+}
+
 /** Fetches just the ad slot — for pages that don't need the rest of the home payload. */
 export async function getHomeAd(): Promise<HomeAd | null> {
   if (USE_MOCK_DATA) return MOCK_HOME_PAGE.ad;

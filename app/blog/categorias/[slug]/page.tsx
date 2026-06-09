@@ -141,7 +141,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
             <ul className="divide-y divide-rule">
               {articles.map((a) => (
                 <li key={a.slug}>
-                  <Link href={`/articulos/${a.slug}`} className="flex gap-3.5 items-start py-4">
+                  <Link href={`/app/blog/articulos/${a.slug}`} className="flex gap-3.5 items-start py-4">
                     <div
                       className="w-16 h-16 rounded-xl flex-shrink-0"
                       style={{ background: CATEGORY_COLOR_VAR[a.category] ?? "var(--color-peach)" }}
@@ -222,7 +222,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
               {others.map((c) => (
                 <Link
                   key={c.slug}
-                  href={`/categorias/${c.slug}`}
+                  href={`/app/blog/categorias/${c.slug}`}
                   className="bg-surface border border-rule rounded-2xl px-4 py-3.5 card-hover"
                 >
                   <div className="font-display text-lg font-extrabold tracking-[-0.025em]">{c.name ?? "Categoría"}</div>

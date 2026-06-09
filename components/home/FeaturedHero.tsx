@@ -8,7 +8,7 @@ import type { Article } from "@/types";
 export function FeaturedHero({ article }: { article: Article }) {
   return (
     <section className="mx-auto max-w-screen-md px-4 pb-7">
-      <Link href={`/articulos/${article.slug}`} className="block bg-mandarina text-bg rounded-3xl overflow-hidden card-hover">
+      <Link href={`/app/blog/articulos/${article.slug}`} className="block bg-mandarina text-bg rounded-3xl overflow-hidden card-hover">
         {article.heroImage.url ? (
           <Image
             src={article.heroImage.url}

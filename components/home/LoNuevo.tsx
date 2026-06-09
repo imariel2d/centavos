@@ -14,7 +14,7 @@ export function LoNuevo({ articles }: { articles: Article[] }) {
         {articles.slice(0, 3).map((a, i) => (
           <Link
             key={a.slug}
-            href={`/articulos/${a.slug}`}
+            href={`/app/blog/articulos/${a.slug}`}
             className={`flex gap-3.5 items-start py-4 transition-opacity duration-150 hover:opacity-70 ${i < Math.min(articles.length, 3) - 1 ? "border-b border-rule" : ""}`}
           >
             {a.heroImage.url ? (

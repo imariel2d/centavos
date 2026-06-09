@@ -18,7 +18,7 @@ export function ArticleCard({
   if (variant === "compact") {
     return (
       <Link
-        href={`/articulos/${a.slug}`}
+        href={`/app/blog/articulos/${a.slug}`}
         className={`${accent} card-hover rounded-2xl p-4 flex flex-col justify-between min-h-[150px] text-ink`}
       >
         <Chip bg="var(--color-ink)" fg="var(--color-bg)" size="sm">
@@ -39,7 +39,7 @@ export function ArticleCard({
   if (variant === "feature") {
     return (
       <Link
-        href={`/articulos/${a.slug}`}
+        href={`/app/blog/articulos/${a.slug}`}
         className="block bg-mandarina text-bg rounded-3xl overflow-hidden card-hover"
       >
         <div className="px-6 pt-6 pb-7">
@@ -63,7 +63,7 @@ export function ArticleCard({
 
   return (
     <Link
-      href={`/articulos/${a.slug}`}
+      href={`/app/blog/articulos/${a.slug}`}
       className={`${accent} card-hover block rounded-3xl p-5 text-ink`}
     >
       <Chip bg="var(--color-ink)" fg="var(--color-bg)" size="md">

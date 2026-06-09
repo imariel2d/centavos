@@ -69,7 +69,7 @@ export default async function HomePage() {
 
 	return (
 		<>
-			<Header />
+			<Header variant="full" />
 
 			<main className="pb-10 md:pb-14">
 				{hero && <FeaturedHero article={hero} />}
