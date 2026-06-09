@@ -227,6 +227,14 @@ export default async function AppPage() {
             </div>
           </div>
         </section>
+
+        {/* DISCLAIMER */}
+        <section className="mx-auto max-w-screen-lg px-5 pb-10">
+          <p className="text-center text-[11px] text-ink-soft/80 leading-relaxed max-w-xl mx-auto">
+            * Las pantallas mostradas son ilustrativas y pueden variar de la app real.
+            Cifras y datos en las imágenes son de ejemplo.
+          </p>
+        </section>
       </main>
 
       <Footer />
