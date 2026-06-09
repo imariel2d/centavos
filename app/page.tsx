@@ -4,6 +4,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CategoryStrip } from "@/components/CategoryStrip";
 import { HeroKicker } from "@/components/home/HeroKicker";
+import { AppHero } from "@/components/home/AppHero";
+import { AppFeatures } from "@/components/home/AppFeatures";
 import { FeaturedHero } from "@/components/home/FeaturedHero";
 import { EmpiezaPorAqui } from "@/components/home/EmpiezaPorAqui";
 import { HomeAd } from "@/components/home/HomeAd";
@@ -70,7 +72,21 @@ export default async function HomePage() {
       <Header />
 
       <main className="pb-10 md:pb-14">
-        <HeroKicker edition={24} />
+        {/* App primero; el blog pasa a segundo plano. HeroKicker queda como
+            fallback para que la página nunca pierda su H1. */}
+        {homePage.app ? (
+          <>
+            <AppHero app={homePage.app} />
+            <AppFeatures features={homePage.app.features} />
+            <div className="mx-auto max-w-screen-md px-5 pt-12 md:pt-16 pb-5">
+              <div className="text-[11px] font-extrabold tracking-[0.06em] text-mandarina-deep uppercase">
+                El blog · Lo más reciente
+              </div>
+            </div>
+          </>
+        ) : (
+          <HeroKicker edition={24} />
+        )}
         {hero && <FeaturedHero article={hero} />}
         <div className="mx-auto max-w-screen-md">
           <CategoryStrip />

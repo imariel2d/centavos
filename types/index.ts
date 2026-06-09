@@ -96,10 +96,30 @@ export interface HomeAd {
   imageAlt: string;
 }
 
+/** One feature bullet of the Centavos app (expenses, subscriptions, budgets…). */
+export interface HomeAppFeature {
+  emoji: string;
+  title: string;
+  description: string;
+}
+
+/** App showcase rendered as the homepage hero. */
+export interface HomeApp {
+  kicker: string;
+  headline: string;
+  body: string;
+  storeUrl?: string;
+  playUrl?: string;
+  screenshotUrl?: string;
+  screenshotAlt: string;
+  features: HomeAppFeature[];
+}
+
 /** Curated content for the Home Page singleton in Directus. */
 export interface HomePageData {
   starterSteps: HomeStarterStep[];
   trending: Article[];
   moreArticles: Article[];
   ad: HomeAd | null;
+  app: HomeApp | null;
 }

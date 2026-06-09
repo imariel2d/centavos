@@ -24,6 +24,8 @@ import type {
   CategorySlug,
   GlossaryTerm,
   HomeAd,
+  HomeApp,
+  HomeAppFeature,
   HomePageData,
   HomeStarterStep,
   ImageRef,
@@ -338,6 +340,15 @@ interface DHomePage {
   ad_href?: string | null;
   ad_image?: string | null;
   ad_image_alt?: string | null;
+  app_enabled?: boolean | null;
+  app_kicker?: string | null;
+  app_headline?: string | null;
+  app_body?: string | null;
+  app_store_url?: string | null;
+  app_play_url?: string | null;
+  app_screenshot?: string | null;
+  app_screenshot_alt?: string | null;
+  app_features?: unknown;
 }
 
 const HOME_FIELDS = [
@@ -360,6 +371,15 @@ const HOME_FIELDS = [
   "ad_href",
   "ad_image",
   "ad_image_alt",
+  "app_enabled",
+  "app_kicker",
+  "app_headline",
+  "app_body",
+  "app_store_url",
+  "app_play_url",
+  "app_screenshot",
+  "app_screenshot_alt",
+  "app_features",
 ].join(",");
 
 function isPublishedArticle(
@@ -403,11 +423,43 @@ function mapHomeAd(row: DHomePage): HomeAd | null {
   };
 }
 
+// Directus list-interface rows are untyped JSON — validate each entry.
+function parseAppFeatures(raw: unknown): HomeAppFeature[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((f) => {
+    if (f == null || typeof f !== "object") return [];
+    const { emoji, title, description } = f as Record<string, unknown>;
+    if (typeof title !== "string" || !title.trim()) return [];
+    return [{
+      emoji: typeof emoji === "string" ? emoji.trim() : "",
+      title: title.trim(),
+      description: typeof description === "string" ? description.trim() : "",
+    }];
+  });
+}
+
+function mapHomeApp(row: DHomePage): HomeApp | null {
+  if (!row.app_enabled) return null;
+  const headline = row.app_headline?.trim();
+  if (!headline) return null;
+  return {
+    kicker: row.app_kicker?.trim() || "Nuestra app · iOS y Android",
+    headline,
+    body: row.app_body?.trim() ?? "",
+    storeUrl: row.app_store_url?.trim() || undefined,
+    playUrl: row.app_play_url?.trim() || undefined,
+    screenshotUrl: fileUrl(row.app_screenshot),
+    screenshotAlt: row.app_screenshot_alt?.trim() || "App Centavos",
+    features: parseAppFeatures(row.app_features),
+  };
+}
+
 const EMPTY_HOME: HomePageData = {
   starterSteps: [],
   trending: [],
   moreArticles: [],
   ad: null,
+  app: null,
 };
 
 const HOME_AD_FIELDS = [
@@ -440,6 +492,7 @@ export async function getHomePage(): Promise<HomePageData> {
       trending: junctionToArticles(row.trending),
       moreArticles: junctionToArticles(row.more_articles),
       ad: mapHomeAd(row),
+      app: mapHomeApp(row),
     };
   } catch {
     // Collection may not exist yet — gracefully degrade.

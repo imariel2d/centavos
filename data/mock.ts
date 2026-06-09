@@ -180,4 +180,18 @@ export const HOME_PAGE: HomePageData = {
     imageUrl: "https://images.unsplash.com/photo-1559525839-d9acfd5b35a4?w=600&q=70",
     imageAlt: "Bolsa de café El Culto al Perro Café",
   },
+  app: {
+    kicker: "Nuestra app · iOS y Android",
+    headline: "Tu lana, bajo control",
+    body: "Registra tus gastos, cacha tus suscripciones olvidadas y arma presupuestos que sí aguantas. Gratis, sin anuncios raros.",
+    storeUrl: "https://apps.apple.com/mx/app/centavos/id0000000000",
+    playUrl: "https://play.google.com/store/apps/details?id=mx.centavos.app",
+    screenshotUrl: undefined, // exercises the phone-frame placeholder
+    screenshotAlt: "App Centavos mostrando el resumen de gastos",
+    features: [
+      { emoji: "💸", title: "Gastos al día", description: "Registra en segundos y ve a dónde se va tu quincena." },
+      { emoji: "🔁", title: "Suscripciones", description: "Detecta cobros recurrentes y cancela los que ya no usas." },
+      { emoji: "🎯", title: "Presupuestos", description: "Límites por categoría que te avisan antes de pasarte." },
+    ],
+  },
 };
