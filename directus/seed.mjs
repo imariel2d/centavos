@@ -166,9 +166,32 @@ async function run() {
         articles_slug: a.slug,
         sort: i + 1,
       })),
+      // Ad slot. ad_image is a Directus file uuid — mock only has a URL,
+      // so the image gets uploaded manually in the admin.
+      ...(hp.ad && {
+        ad_enabled: true,
+        ad_label: hp.ad.label,
+        ad_brand: hp.ad.brand,
+        ad_headline: hp.ad.headline,
+        ad_body: hp.ad.body,
+        ad_cta: hp.ad.cta,
+        ad_href: hp.ad.href,
+        ad_image_alt: hp.ad.imageAlt,
+      }),
+      // App showcase. app_screenshot is a file uuid — uploaded manually.
+      ...(hp.app && {
+        app_enabled: true,
+        app_kicker: hp.app.kicker,
+        app_headline: hp.app.headline,
+        app_body: hp.app.body,
+        app_store_url: hp.app.storeUrl ?? null,
+        app_play_url: hp.app.playUrl ?? null,
+        app_screenshot_alt: hp.app.screenshotAlt,
+        app_features: hp.app.features,
+      }),
     }),
   });
-  console.log("  ~ home_page (starter_steps, trending, more_articles)");
+  console.log("  ~ home_page (starter_steps, trending, more_articles, ad, app)");
 
   console.log("\ndone.");
 }
