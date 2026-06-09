@@ -38,7 +38,6 @@ body {
   font-size: 15px;
   line-height: 1.5;
   min-height: 100dvh;
-  overflow-x: hidden;
 }
 
 /* Ocultar scrollbars en strips horizontales */
@@ -51,5 +50,34 @@ body {
 .prose-centavo a { color: var(--color-mandarina-deep); text-decoration: underline; text-underline-offset: 3px; }
 
 /* Animación sutil al hover de cards */
-.card-hover { transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease; }
-.card-hover:hover { transform: translateY(-2px); opacity: 0.82; }
+.card-hover { transition: transform .18s ease, box-shadow .18s ease; }
+.card-hover:hover { transform: translateY(-2px); }
+
+/* ──────────────────────────────────────────────────────────────
+   Maqueta de teléfono (página de la app)
+   ────────────────────────────────────────────────────────────── */
+.phone {
+  width: 300px;
+  border-radius: 44px;
+  background: #15110d;
+  padding: 9px;
+  box-shadow: 0 40px 80px -20px rgba(42, 26, 16, .45), 0 12px 30px -12px rgba(42, 26, 16, .35);
+}
+.phone-screen {
+  position: relative;
+  border-radius: 36px;
+  overflow: hidden;
+  background: var(--color-bg);
+  height: 620px;
+}
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 24px;
+  background: #15110d;
+  border-radius: 0 0 16px 16px;
+  z-index: 20;
+}

@@ -39,3 +39,4 @@ deploy/docker-compose.prod.yml
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.claude/

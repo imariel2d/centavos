@@ -8,6 +8,7 @@ export function Header() {
       <div className="mx-auto max-w-screen-lg flex items-center justify-between px-4 py-3">
         <Logo size={26} />
         <nav className="hidden md:flex items-center gap-7 text-sm font-semibold">
+          <Link href="/blog"                className="hover:text-mandarina-deep">Blog</Link>
           <Link href="/categorias/ahorro"   className="hover:text-mandarina-deep">Ahorro</Link>
           <Link href="/categorias/creditos" className="hover:text-mandarina-deep">Créditos</Link>
           <Link href="/categorias/afore"    className="hover:text-mandarina-deep">AFORE</Link>
