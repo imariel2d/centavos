@@ -43,8 +43,7 @@ export default function PrivacidadAppPage() {
     >
       <LegalSectionBlock n={1} title="Responsable del tratamiento">
         <p>
-          El responsable del tratamiento de tus datos personales es <b>Centavos</b>, con domicilio
-          en [PENDIENTE: domicilio fiscal del responsable], y con sitio web en{" "}
+          El responsable del tratamiento de tus datos personales es <b>Centavos</b>, con sitio web en{" "}
           <a href="https://centavos.mx">https://centavos.mx</a>. Para cualquier tema de privacidad
           puedes escribirnos a <a href="mailto:hola@centavos.mx">hola@centavos.mx</a>.
         </p>
@@ -115,10 +114,6 @@ export default function PrivacidadAppPage() {
       <LegalSectionBlock n={5} title="Transferencias de datos">
         <p>Para operar el servicio usamos proveedores que tratan datos por cuenta nuestra:</p>
         <ul>
-          <li>
-            <b>Hosting en la nube:</b> nuestros servidores y base de datos (incluido el backend en
-            https://api.centavos.mx) corren en infraestructura de proveedores de nube.
-          </li>
           <li>
             <b>Proveedor de correo transaccional:</b> para enviarte correos de verificación y
             avisos de cuenta.
