@@ -126,6 +126,7 @@ export function AnotarMock() {
       <div className="px-4 mt-3 grid grid-cols-3 gap-2 text-center font-display text-2xl font-bold">
         <div className="py-2">1</div><div className="py-2">2</div><div className="py-2">3</div>
         <div className="py-2">4</div><div className="py-2">5</div><div className="py-2">6</div>
+        <div className="py-2">7</div><div className="py-2">8</div><div className="py-2">9</div>
       </div>
       <div className="px-4 mt-1">
         <div className="bg-ink text-bg rounded-2xl py-3 text-center text-[14px] font-bold">Anotar $85</div>

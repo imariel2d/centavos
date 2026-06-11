@@ -300,34 +300,9 @@ async function run() {
     meta: { interface: "input", width: "half", note: "Texto alternativo de la imagen" },
   });
 
-  // ── home_page app showcase (hero arriba del blog) ────────────
-  await addField("home_page", "app_divider", {
-    type: "alias",
-    meta: {
-      interface: "presentation-divider",
-      special: ["alias", "no-data"],
-      options: { title: "App Centavos (hero principal)", color: "#ED7E3C" },
-      width: "full",
-    },
-  });
-  await addField("home_page", "app_enabled", {
-    type: "boolean",
-    meta: { interface: "boolean", width: "half", note: "Mostrar la app como hero de la home" },
-    schema: { default_value: false, is_nullable: false },
-  });
-  await addField("home_page", "app_kicker", {
-    type: "string",
-    meta: { interface: "input", width: "half", note: "Texto pequeño arriba del título" },
-    schema: { default_value: "Nuestra app · iOS y Android" },
-  });
-  await addField("home_page", "app_headline", {
-    type: "string",
-    meta: { interface: "input", width: "full", note: "Título grande (ej. «Tu lana, bajo control»)" },
-  });
-  await addField("home_page", "app_body", {
-    type: "text",
-    meta: { interface: "input-multiline", width: "full", note: "Pitch corto de la app" },
-  });
+  // ── home_page store links de la app ──────────────────────────
+  // El landing (/) está hardcodeado en código; de Directus solo salen
+  // las URLs de descarga.
   await addField("home_page", "app_store_url", {
     type: "string",
     meta: { interface: "input", width: "half", note: "URL en App Store" },
@@ -336,32 +311,17 @@ async function run() {
     type: "string",
     meta: { interface: "input", width: "half", note: "URL en Google Play" },
   });
-  await addField("home_page", "app_screenshot", {
-    type: "uuid",
-    meta: { interface: "file-image", display: "image", special: ["file"], width: "half" },
-    schema: { foreign_key_table: "directus_files" },
-  });
-  await addField("home_page", "app_screenshot_alt", {
-    type: "string",
-    meta: { interface: "input", width: "half", note: "Texto alternativo del screenshot" },
-  });
-  await addField("home_page", "app_features", {
-    type: "json",
-    meta: {
-      interface: "list",
-      special: ["cast-json"],
-      width: "full",
-      note: "Funciones de la app (gastos, suscripciones, presupuestos)",
-      options: {
-        template: "{{ emoji }} {{ title }}",
-        fields: [
-          { field: "emoji",       name: "Emoji",       type: "string", meta: { interface: "input", width: "half" } },
-          { field: "title",       name: "Título",      type: "string", meta: { interface: "input", width: "half" } },
-          { field: "description", name: "Descripción", type: "text",   meta: { interface: "input-multiline", width: "full" } },
-        ],
-      },
-    },
-  });
+
+  // Drop legacy app showcase fields (landing now lives in code)
+  for (const f of [
+    "app_divider", "app_enabled", "app_kicker", "app_headline",
+    "app_body", "app_screenshot", "app_screenshot_alt", "app_features",
+  ]) {
+    if (await exists(`/fields/home_page/${f}`)) {
+      await api(`/fields/home_page/${f}`, { method: "DELETE" });
+      console.log(`  - dropped home_page.${f}`);
+    }
+  }
 
   // newsletter_subscribers (double opt-in via Resend)
   await createSubscribersCollection();
@@ -407,7 +367,6 @@ async function run() {
   await ensureRelation({ collection: "articles",       field: "author",   related: "authors" });
   await ensureRelation({ collection: "articles",       field: "hero_image", related: "directus_files" });
   await ensureRelation({ collection: "home_page",      field: "ad_image",   related: "directus_files" });
-  await ensureRelation({ collection: "home_page",      field: "app_screenshot", related: "directus_files" });
 
   // Register M2M relations for home_page
   // starter_steps
