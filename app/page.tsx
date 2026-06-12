@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: `${SITE.url}/app`,
-    title: "Centavos · Finans sin sustos",
+    title: "Centavos · Finanzas sin sustos",
     description: "Anota gastos, bolsas y alcancías. Sin conectar tu banco. Descárgala gratis.",
   },
 };
@@ -40,9 +40,15 @@ export default async function AppPage() {
 
   return (
     <>
+      <a
+        href="#contenido"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:text-bg focus:rounded-full focus:px-5 focus:py-2.5 focus:text-sm focus:font-bold"
+      >
+        Saltar al contenido
+      </a>
       <Header variant="minimal" />
 
-      <main>
+      <main id="contenido">
         {/* HERO */}
         <section className="relative overflow-hidden">
           <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-yolk/25 blur-2xl" aria-hidden />
@@ -57,7 +63,7 @@ export default async function AppPage() {
               </div>
               <h1 className="font-display text-[46px] md:text-[68px] font-extrabold tracking-[-0.045em] leading-[0.9] mb-5">
                 Tu lana,<br />
-                <span className="text-mandarina italic">en tu bolsillo</span>.
+                <span className="text-mandarina-deep italic">en tu bolsillo</span>.
               </h1>
               <p className="text-[16px] md:text-lg leading-relaxed text-ink-soft max-w-md mb-7">
                 Centavos es un cuaderno, no un banco. Anotas lo que gastas, lo que ahorras y lo que pagas — y por fin ves a dónde se va tu dinero. <b className="text-ink">Sin conectar tu banco. Sin sermones.</b>
@@ -76,30 +82,42 @@ export default async function AppPage() {
             </div>
 
             <div className="flex justify-center md:justify-end">
-              <PhoneFrame tilt={2}>
-                <PulsoMock />
-              </PhoneFrame>
+              <p className="sr-only">
+                Pantalla de la app mostrando el Pulso: tu dinero disponible del mes, un acceso para
+                anotar gastos y el avance de tus bolsas.
+              </p>
+              <div aria-hidden>
+                <PhoneFrame tilt={2}>
+                  <PulsoMock />
+                </PhoneFrame>
+              </div>
             </div>
           </div>
         </section>
 
         {/* TRUST BAR */}
-        <section className="bg-ink text-bg">
-          <div className="mx-auto max-w-screen-lg px-5 py-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-center">
+        <section className="bg-ink text-bg" aria-label="Compromisos de Centavos">
+          <ul className="mx-auto max-w-screen-lg px-5 py-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-center">
             {TRUST.map((t) => (
-              <div key={t} className="flex items-center gap-2 text-[13px] font-semibold">
+              <li key={t} className="flex items-center gap-2 text-[13px] font-semibold">
                 <span className="text-yolk" aria-hidden>●</span> {t}
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
 
         {/* FEATURE 1 — Anota */}
         <section className="mx-auto max-w-screen-lg px-5 py-14 md:py-20 grid md:grid-cols-2 gap-10 items-center">
           <div className="flex justify-center order-2 md:order-1">
-            <PhoneFrame tilt={-2}>
-              <AnotarMock />
-            </PhoneFrame>
+            <p className="sr-only">
+              Pantalla de la app para anotar un gasto: monto, categorías con emoji y una nota
+              opcional.
+            </p>
+            <div aria-hidden>
+              <PhoneFrame tilt={-2}>
+                <AnotarMock />
+              </PhoneFrame>
+            </div>
           </div>
           <div className="order-1 md:order-2">
             <div className="font-hand text-mandarina-deep text-3xl leading-none mb-2">rapidísimo</div>
@@ -116,7 +134,7 @@ export default async function AppPage() {
                 <>Una nota opcional para acordarte del <i>porqué</i></>,
               ].map((li, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-mandarina text-bg grid place-items-center text-[13px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span aria-hidden className="w-6 h-6 rounded-full bg-ink text-bg grid place-items-center text-[13px] font-bold flex-shrink-0 mt-0.5">✓</span>
                   <span className="text-[14px]">{li}</span>
                 </li>
               ))}
@@ -142,9 +160,15 @@ export default async function AppPage() {
               </div>
             </div>
             <div className="flex justify-center md:justify-end">
-              <PhoneFrame tilt={2}>
-                <SuscripcionesMock />
-              </PhoneFrame>
+              <p className="sr-only">
+                Pantalla de la app de suscripciones: el total mensual y la lista de próximos
+                cobros como Netflix, Spotify y el gym.
+              </p>
+              <div aria-hidden>
+                <PhoneFrame tilt={2}>
+                  <SuscripcionesMock />
+                </PhoneFrame>
+              </div>
             </div>
           </div>
         </section>
@@ -152,20 +176,20 @@ export default async function AppPage() {
         {/* FEATURE GRID */}
         <section className="mx-auto max-w-screen-lg px-5 py-14 md:py-20">
           <div className="text-center max-w-xl mx-auto mb-10">
-            <div className="text-[11px] font-extrabold tracking-wider text-mandarina-deep uppercase mb-2">Todo en un cuaderno</div>
+            <div className="text-[11px] font-extrabold tracking-wider text-[#b04f27] uppercase mb-2">Todo en un cuaderno</div>
             <h2 className="font-display text-3xl md:text-5xl font-extrabold tracking-[-0.03em] leading-[1.0]">
               Lo que Centavos lleva por ti
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-3 max-w-4xl mx-auto">
+          <ul className="grid md:grid-cols-3 gap-3 max-w-4xl mx-auto">
             {FEATURES.map((f) => (
-              <div key={f.t} className="bg-surface border border-rule rounded-3xl p-6 card-hover">
-                <div className={`w-12 h-12 rounded-2xl ${f.bg} grid place-items-center text-2xl mb-4`}>{f.emoji}</div>
-                <div className="font-display text-lg font-extrabold tracking-[-0.02em] mb-1">{f.t}</div>
+              <li key={f.t} className="bg-surface border border-rule rounded-3xl p-6 card-hover">
+                <div aria-hidden className={`w-12 h-12 rounded-2xl ${f.bg} grid place-items-center text-2xl mb-4`}>{f.emoji}</div>
+                <h3 className="font-display text-lg font-extrabold tracking-[-0.02em] mb-1">{f.t}</h3>
                 <p className="text-[13px] text-ink-soft leading-relaxed">{f.d}</p>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
 
         {/* HOW IT WORKS */}
@@ -175,15 +199,15 @@ export default async function AppPage() {
               <div className="text-[11px] font-extrabold tracking-wider text-mandarina-deep uppercase mb-2">Así de fácil</div>
               <h2 className="font-display text-3xl md:text-5xl font-extrabold tracking-[-0.03em] leading-[1.0]">Empieza en 3 pasos</h2>
             </div>
-            <div className="grid md:grid-cols-3 gap-6">
+            <ol className="grid md:grid-cols-3 gap-6">
               {STEPS.map((s) => (
-                <div key={s.n} className="text-center">
-                  <div className="font-display text-6xl font-extrabold tracking-[-0.04em] text-ink/15">{s.n}</div>
-                  <div className="font-display text-xl font-extrabold tracking-[-0.02em] mt-2 mb-1">{s.t}</div>
+                <li key={s.n} className="text-center">
+                  <div aria-hidden className="font-display text-6xl font-extrabold tracking-[-0.04em] text-ink/15">{s.n}</div>
+                  <h3 className="font-display text-xl font-extrabold tracking-[-0.02em] mt-2 mb-1">{s.t}</h3>
                   <p className="text-[14px] text-ink-soft leading-relaxed">{s.d}</p>
-                </div>
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
         </section>
 
@@ -230,7 +254,7 @@ export default async function AppPage() {
 
         {/* DISCLAIMER */}
         <section className="mx-auto max-w-screen-lg px-5 pb-10">
-          <p className="text-center text-[11px] text-ink-soft/80 leading-relaxed max-w-xl mx-auto">
+          <p className="text-center text-[11px] text-ink-soft leading-relaxed max-w-xl mx-auto">
             * Las pantallas mostradas son ilustrativas y pueden variar de la app real.
             Cifras y datos en las imágenes son de ejemplo.
           </p>

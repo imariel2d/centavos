@@ -28,6 +28,7 @@ export function AppStoreBadges({ variant = "dark", className = "", storeUrl, pla
             <span className="block text-[9px] opacity-70 font-semibold">Descárgala en</span>
             <span className="block font-bold text-[15px] mt-0.5">App Store</span>
           </span>
+          <span className="sr-only">(se abre en una pestaña nueva)</span>
         </a>
       )}
       {playUrl && (
@@ -42,6 +43,7 @@ export function AppStoreBadges({ variant = "dark", className = "", storeUrl, pla
             <span className="block text-[9px] opacity-70 font-semibold">Disponible en</span>
             <span className="block font-bold text-[15px] mt-0.5">Google Play</span>
           </span>
+          <span className="sr-only">(se abre en una pestaña nueva)</span>
         </a>
       )}
     </div>

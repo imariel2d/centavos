@@ -53,6 +53,18 @@ body {
 .card-hover { transition: transform .18s ease, box-shadow .18s ease; }
 .card-hover:hover { transform: translateY(-2px); }
 
+/* A11y: anillo de foco visible para navegación con teclado (WCAG 2.4.7) */
+:focus-visible {
+  outline: 2px solid var(--color-mandarina-deep);
+  outline-offset: 2px;
+}
+
+/* A11y: respeta la preferencia de movimiento reducido (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  .card-hover { transition: none; }
+  .card-hover:hover { transform: none; }
+}
+
 /* ──────────────────────────────────────────────────────────────
    Maqueta de teléfono (página de la app)
    ────────────────────────────────────────────────────────────── */
