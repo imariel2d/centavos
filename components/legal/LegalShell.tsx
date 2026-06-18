@@ -83,6 +83,7 @@ export function LegalShell({
           <Link href="/app/terminos" className="hover:text-mandarina-deep">Términos y Condiciones</Link>
           <Link href="/app/privacidad" className="hover:text-mandarina-deep">Aviso de Privacidad</Link>
           <Link href="/app/eliminar-cuenta" className="hover:text-mandarina-deep">Eliminar cuenta</Link>
+          <Link href="/app/soporte" className="hover:text-mandarina-deep">Soporte</Link>
           <a href="mailto:hola@centavos.mx" className="hover:text-mandarina-deep">hola@centavos.mx</a>
           <span className="ml-auto">© {new Date().getFullYear()} Centavos</span>
         </div>
