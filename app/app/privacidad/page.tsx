@@ -39,7 +39,6 @@ export default function PrivacidadAppPage() {
         </p>
       }
       sections={SECTIONS}
-      crossLink={{ href: "/app/terminos", label: "Términos y Condiciones" }}
     >
       <LegalSectionBlock n={1} title="Responsable del tratamiento">
         <p>

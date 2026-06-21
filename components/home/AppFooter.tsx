@@ -1,29 +1,22 @@
 import Link from "next/link";
-import { Logo } from "./Logo";
+import { Logo } from "@/components/Logo";
 
-export function Footer() {
-  const hasContact = Boolean(process.env.CONTACT_EMAIL);
-
-  // "Newsletter" and "Contacto" depend on CONTACT_EMAIL being configured.
-  const centavoItems = [
-    { name: "Acerca de", href: "/blog/nosotros" },
-    { name: "Equipo",    href: "/blog/nosotros#equipo" },
-    ...(hasContact
-      ? [
-          { name: "Newsletter", href: "#newsletter" },
-          { name: "Contacto",   href: "/blog/nosotros#contacto" },
-        ]
-      : []),
-  ];
-
+/**
+ * Footer de la landing de la app (/). Reúne los enlaces legales y de soporte
+ * de las páginas /app/* (Términos, Privacidad, Eliminar cuenta, Soporte) pero
+ * con el estilo oscuro del footer del blog (Logo + lema + columnas).
+ */
+export function AppFooter() {
   const cols = [
-    { h: "Temas", items: [
-      { name: "Ahorro",   href: "/blog/categorias/ahorro"   },
-      { name: "Créditos", href: "/blog/categorias/creditos" },
-      { name: "AFORE",    href: "/blog/categorias/afore"    },
-      { name: "PPR",      href: "/blog/categorias/ppr"      },
+    { h: "Soporte", items: [
+      { name: "Soporte",        href: "/app/soporte" },
+      { name: "Eliminar cuenta", href: "/app/eliminar-cuenta" },
+      { name: "Contacto",        href: "/app/soporte" },
     ]},
-    { h: "Centavo", items: centavoItems },
+    { h: "Legal", items: [
+      { name: "Términos y Condiciones", href: "/app/terminos" },
+      { name: "Aviso de Privacidad",    href: "/app/privacidad" },
+    ]},
   ];
 
   return (
@@ -55,8 +48,6 @@ export function Footer() {
 
         <div className="mt-8 pt-5 border-t border-bg/10 text-[10px] text-bg/50 tracking-wide flex flex-wrap items-center gap-x-4 gap-y-1">
           <span>© {new Date().getFullYear()} Centavos</span>
-          <Link href="/blog/privacidad" className="hover:text-bg">Privacidad</Link>
-          <Link href="/blog/terminos" className="hover:text-bg">Términos</Link>
         </div>
       </div>
     </footer>

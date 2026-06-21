@@ -1,45 +1,30 @@
-import Link from "next/link";
+import { AppHeader } from "@/components/home/AppHeader";
+import { AppFooter } from "@/components/home/AppFooter";
 import { BackToTop } from "./BackToTop";
 
 export type LegalSection = { id: string; title: string };
 
 /**
  * Layout compartido para las páginas legales de la app (/app/terminos,
- * /app/privacidad): header sticky simple, TOC lateral en desktop,
- * contenido ~720px y footer con links cruzados.
+ * /app/privacidad): navbar oscuro (AppHeader), TOC lateral en desktop,
+ * contenido ~720px y footer compartido (AppFooter).
  */
 export function LegalShell({
   title,
   updated,
   intro,
   sections,
-  crossLink,
   children,
 }: {
   title: string;
   updated: string;
   intro: React.ReactNode;
   sections: LegalSection[];
-  crossLink: { href: string; label: string };
   children: React.ReactNode;
 }) {
   return (
     <>
-      <header className="sticky top-0 z-30 bg-bg/95 backdrop-blur-sm border-b border-rule">
-        <div className="mx-auto max-w-screen-lg flex items-center justify-between px-5 py-3">
-          <Link href="/" aria-label="Centavos · Inicio" className="font-display text-xl font-extrabold tracking-[-0.03em] text-mandarina-deep select-none">
-            centavos
-          </Link>
-          <nav className="flex items-center gap-5 text-[13px] font-semibold">
-            <Link href={crossLink.href} className="hover:text-mandarina-deep">
-              {crossLink.label}
-            </Link>
-            <Link href="/" className="bg-ink text-bg rounded-full px-4 py-1.5 hover:opacity-85">
-              La app
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="mx-auto max-w-screen-lg px-5 pb-16 md:grid md:grid-cols-[230px_1fr] md:gap-10">
         {/* TOC lateral (solo desktop) */}
@@ -77,17 +62,7 @@ export function LegalShell({
         </article>
       </main>
 
-      <footer className="border-t border-rule">
-        <div className="mx-auto max-w-screen-lg px-5 py-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-[12px] text-ink-soft">
-          <span className="font-display font-extrabold text-mandarina-deep text-sm">centavos</span>
-          <Link href="/app/terminos" className="hover:text-mandarina-deep">Términos y Condiciones</Link>
-          <Link href="/app/privacidad" className="hover:text-mandarina-deep">Aviso de Privacidad</Link>
-          <Link href="/app/eliminar-cuenta" className="hover:text-mandarina-deep">Eliminar cuenta</Link>
-          <Link href="/app/soporte" className="hover:text-mandarina-deep">Soporte</Link>
-          <a href="mailto:hola@centavos.mx" className="hover:text-mandarina-deep">hola@centavos.mx</a>
-          <span className="ml-auto">© {new Date().getFullYear()} Centavos</span>
-        </div>
-      </footer>
+      <AppFooter />
 
       <BackToTop />
     </>

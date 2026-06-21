@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { AppFooter } from "@/components/home/AppFooter";
 import { AppStoreBadges } from "@/components/home/AppStoreBadges";
 import { PhoneFrame, PulsoMock, AnotarMock, SuscripcionesMock } from "@/components/home/PhoneMock";
 import { getAppLinks } from "@/lib/articles";
@@ -261,7 +261,7 @@ export default async function AppPage() {
         </section>
       </main>
 
-      <Footer />
+      <AppFooter />
     </>
   );
 }

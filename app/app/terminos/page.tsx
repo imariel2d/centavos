@@ -42,7 +42,6 @@ export default function TerminosAppPage() {
         </p>
       }
       sections={SECTIONS}
-      crossLink={{ href: "/app/privacidad", label: "Aviso de Privacidad" }}
     >
       <LegalSectionBlock n={1} title="Aceptación de los términos">
         <p>

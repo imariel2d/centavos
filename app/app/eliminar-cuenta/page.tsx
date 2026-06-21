@@ -27,7 +27,6 @@ export default function EliminarCuentaPage() {
         </p>
       }
       sections={SECTIONS}
-      crossLink={{ href: "/app/privacidad", label: "Aviso de Privacidad" }}
     >
       <LegalSectionBlock n={1} title="Eliminar tu cuenta desde la app">
         <p>La forma más rápida es hacerlo directamente desde la app:</p>
