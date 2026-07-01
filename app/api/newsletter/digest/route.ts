@@ -105,7 +105,7 @@ export async function POST(req: Request) {
   const errors: string[] = [];
 
   for (const sub of subscribers) {
-    const preferencesUrl = `${SITE_URL}/preferencias?t=${sub.unsubscribe_token}`;
+    const preferencesUrl = `${SITE_URL}/blog/preferencias?t=${sub.unsubscribe_token}`;
     const html = digestEmailHtml({ articles, preferencesUrl, edition });
 
     try {

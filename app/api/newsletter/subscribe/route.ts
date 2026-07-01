@@ -82,7 +82,7 @@ export async function POST(req: Request) {
 }
 
 async function sendWelcome(email: string, unsubscribeToken: string): Promise<void> {
-  const preferencesUrl = `${SITE_URL}/preferencias?t=${unsubscribeToken}`;
+  const preferencesUrl = `${SITE_URL}/blog/preferencias?t=${unsubscribeToken}`;
   await sendEmail({
     to: email,
     subject: welcomeEmailSubject,
