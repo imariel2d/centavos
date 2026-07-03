@@ -34,14 +34,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const FEATURES = [
   { emoji: "📊", bg: "bg-peach", t: "Pulso diario", d: "Un semáforo te dice si vas bien, aguas o ya te pasaste. De un vistazo." },
-  { emoji: "👛", bg: "bg-sand", t: "Bolsas", d: "Presupuesto por categoría. Te avisamos al 80% y cuando te pasas." },
+  { emoji: "👛", bg: "bg-sand", t: "Presupuestos", d: "Un límite por categoría. Te avisamos al 80% y cuando te pasas." },
   { emoji: "📺", bg: "bg-sky", t: "Suscripciones", d: "Netflix, Spotify, el gym. Sabes cuánto se va y cuándo te cobran." },
 ];
 
 const STEPS = [
   { n: "01", t: "Descarga y crea tu cuenta", d: "30 segundos. Solo tu correo, sin tarjetas ni datos del banco." },
   { n: "02", t: "Anota lo que gastas", d: "Cada cafecito, cada Uber. El botón + lo hace en segundos." },
-  { n: "03", t: "Mira a dónde se va tu lana", d: "El Pulso y las bolsas te muestran el panorama, sin sustos." },
+  { n: "03", t: "Mira a dónde se va tu lana", d: "El Pulso y los presupuestos te muestran el panorama, sin sustos." },
 ];
 
 const TRUST = ["No se conecta a tu banco", "Nunca toca tu dinero", "Tus datos son tuyos", "Hecho en México 🇲🇽"];
@@ -99,7 +99,7 @@ export default async function AppPage() {
             <div className="flex justify-center md:justify-end">
               <p className="sr-only">
                 Pantalla de la app mostrando el Pulso: tu dinero disponible del mes, un acceso para
-                anotar gastos y el avance de tus bolsas.
+                anotar gastos y el avance de tus presupuestos.
               </p>
               <div aria-hidden>
                 <PhoneFrame tilt={2}>

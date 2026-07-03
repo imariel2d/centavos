@@ -63,7 +63,7 @@ export default function PrivacidadAppPage() {
           </li>
           <li>
             <b>Contenido que tú capturas:</b> gastos (monto, categoría, nota, fecha),
-            presupuestos o &ldquo;bolsas&rdquo; (categoría, monto mensual, nombre), alcancías
+            presupuestos (categoría, monto mensual, nombre), alcancías
             (metas de ahorro) y suscripciones (nombre, monto, frecuencia, próximo cobro). Todo lo
             capturas tú a mano; Centavos no lo obtiene de ninguna otra fuente.
           </li>

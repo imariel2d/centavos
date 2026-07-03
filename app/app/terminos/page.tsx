@@ -4,7 +4,7 @@ import { LegalShell, LegalSectionBlock, type LegalSection } from "@/components/l
 export const metadata: Metadata = {
   title: "Términos y Condiciones · App Centavos",
   description:
-    "Términos y Condiciones de la app Centavos: tu cuaderno digital de gastos, bolsas, alcancías y suscripciones. Sin bancos, sin dinero real, sin letras chiquitas escondidas.",
+    "Términos y Condiciones de la app Centavos: tu cuaderno digital de gastos, presupuestos, alcancías y suscripciones. Sin bancos, sin dinero real, sin letras chiquitas escondidas.",
   alternates: { canonical: "/app/terminos" },
 };
 
@@ -54,7 +54,7 @@ export default function TerminosAppPage() {
       <LegalSectionBlock n={2} title="Descripción del servicio">
         <p>
           Centavos es un <b>cuaderno personal digital</b> para llevar registro de tus gastos,
-          presupuestos (les decimos &ldquo;bolsas&rdquo;), alcancías y suscripciones. Tú capturas
+          presupuestos, alcancías y suscripciones. Tú capturas
           todo a mano; nosotros te lo guardamos, lo ordenamos y te lo mostramos bonito.
         </p>
         <p>Para que no haya confusión, esto es lo que Centavos <b>no</b> es:</p>
@@ -106,7 +106,7 @@ export default function TerminosAppPage() {
 
       <LegalSectionBlock n={6} title="Contenido del usuario">
         <p>
-          Todo lo que capturas en Centavos — gastos, bolsas, alcancías, suscripciones, notas —{" "}
+          Todo lo que capturas en Centavos — gastos, presupuestos, alcancías, suscripciones, notas —{" "}
           <b>es tuyo</b>. Punto.
         </p>
         <p>

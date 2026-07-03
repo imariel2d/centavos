@@ -17,7 +17,7 @@ export function AppPromo({ storeUrl, playUrl }: { storeUrl?: string; playUrl?: s
               Llévate Centavo<br />en el bolsillo.
             </h2>
             <p className="text-[14px] md:text-[15px] leading-relaxed opacity-80 max-w-sm mb-6">
-              No solo leemos de lana, también te ayudamos a cuidarla. Anota tus gastos, arma tus bolsas y llena tus alcancías — sin conectar tu banco.
+              No solo leemos de lana, también te ayudamos a cuidarla. Anota tus gastos, arma tus presupuestos y llena tus alcancías — sin conectar tu banco.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <AppStoreBadges variant="light" storeUrl={storeUrl} playUrl={playUrl} />

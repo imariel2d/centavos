@@ -76,7 +76,7 @@ export function PulsoMock() {
         <span className="text-ink" aria-hidden>›</span>
       </div>
 
-      <div className="px-5 mt-5 text-[11px] font-extrabold tracking-wider text-mandarina-deep uppercase">Tus bolsas</div>
+      <div className="px-5 mt-5 text-[11px] font-extrabold tracking-wider text-mandarina-deep uppercase">Tus presupuestos</div>
       <div className="px-4 mt-2 space-y-2">
         <div className="bg-surface border border-rule rounded-2xl px-4 py-3">
           <div className="flex justify-between text-[13px] font-bold mb-2">
