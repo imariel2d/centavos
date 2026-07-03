@@ -7,7 +7,7 @@ import { SITE } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Preferencias del newsletter",
   description: "Administra tu suscripción a Centavo.",
-  alternates: { canonical: `${SITE.url}/preferencias` },
+  alternates: { canonical: `${SITE.url}/blog/preferencias` },
   robots: { index: false, follow: false },
 };
 

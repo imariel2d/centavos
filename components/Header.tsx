@@ -30,7 +30,7 @@ export function Header({ variant = "full" }: { variant?: "full" | "minimal" }) {
         </nav>
         <div className="flex items-center gap-2">
           <Link
-            href="/buscar"
+            href="/blog/buscar"
             aria-label="Buscar"
             className="w-10 h-10 rounded-full bg-surface border border-rule grid place-items-center"
           >

@@ -48,6 +48,17 @@ const nextConfig: NextConfig = {
         destination: "https://centavos.mx/:path*",
         permanent: true,
       },
+      // Blog movido de la raíz a /blog — 301s para conservar el ranking de las URLs viejas.
+      { source: "/articulos/:slug",  destination: "/blog/articulos/:slug",  permanent: true },
+      { source: "/categorias/:slug", destination: "/blog/categorias/:slug", permanent: true },
+      { source: "/glosario",         destination: "/blog/glosario",         permanent: true },
+      { source: "/nosotros",         destination: "/blog/nosotros",         permanent: true },
+      { source: "/buscar",           destination: "/blog/buscar",           permanent: true },
+      { source: "/preferencias",     destination: "/blog/preferencias",     permanent: true },
+      { source: "/privacidad",       destination: "/blog/privacidad",       permanent: true },
+      { source: "/terminos",         destination: "/blog/terminos",         permanent: true },
+      // La landing de la app vivía en /app; ahora es la página raíz.
+      { source: "/app",              destination: "/",                      permanent: true },
     ];
   },
 };

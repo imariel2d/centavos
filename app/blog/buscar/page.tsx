@@ -16,7 +16,7 @@ import { SITE } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Buscar",
   description: "Busca artículos, términos del glosario e historias en Centavos.",
-  alternates: { canonical: `${SITE.url}/buscar` },
+  alternates: { canonical: `${SITE.url}/blog/buscar` },
   robots: { index: false, follow: true }, // las páginas de búsqueda no se indexan
 };
 

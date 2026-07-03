@@ -5,12 +5,12 @@ import Link from "next/link";
 
 const NAV_LINKS = [
   { href: "/blog", label: "Blog" },
-  { href: "/categorias/ahorro", label: "Ahorro" },
-  { href: "/categorias/creditos", label: "Créditos" },
-  { href: "/categorias/afore", label: "AFORE" },
-  { href: "/categorias/ppr", label: "PPR" },
-  { href: "/glosario", label: "Glosario" },
-  { href: "/nosotros", label: "Nosotros" },
+  { href: "/blog/categorias/ahorro", label: "Ahorro" },
+  { href: "/blog/categorias/creditos", label: "Créditos" },
+  { href: "/blog/categorias/afore", label: "AFORE" },
+  { href: "/blog/categorias/ppr", label: "PPR" },
+  { href: "/blog/glosario", label: "Glosario" },
+  { href: "/blog/nosotros", label: "Nosotros" },
 ];
 
 export function MobileMenu() {

@@ -28,17 +28,25 @@ import {
 export const revalidate = 60; // ISR: revalida cada minuto
 
 export async function generateMetadata(): Promise<Metadata> {
+	const base: Metadata = {
+		title: "Blog · Finanzas sin sustos",
+		description:
+			"Blog de finanzas personales para México: ahorro, crédito, AFORE y más, explicado sin choros ni tecnicismos.",
+		alternates: { canonical: "/blog" },
+	};
+
 	// Same call as the page render — Next.js dedupes the fetch in one request.
 	const [hero] = await getLatestArticles(6);
 	const ogImage = ogImageUrl(hero?.heroImage.url);
-	if (!hero || !ogImage) return {}; // falls back to root layout's og-default.png
+	if (!hero || !ogImage) return base; // falls back to root layout's og-default.png
 
 	const alt = hero.heroImage.alt || hero.title;
 	return {
+		...base,
 		openGraph: {
 			type: "website",
 			locale: "es_MX",
-			url: SITE.url,
+			url: `${SITE.url}/blog`,
 			siteName: SITE.name,
 			title: "Centavos · Finanzas sin sustos",
 			description: "Blog financiero mexicano para jóvenes que apenas empiezan con la lana.",

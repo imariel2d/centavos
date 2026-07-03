@@ -9,11 +9,11 @@ import { getAllAuthors, getArticleCount } from "@/lib/articles";
 export const metadata: Metadata = {
   title: "Acerca de · Quiénes somos",
   description: "Centavos es una publicación independiente mexicana. Nuestra misión: ayudar a la gente a perderle el miedo a las finanzas.",
-  alternates: { canonical: `${SITE.url}/nosotros` },
+  alternates: { canonical: `${SITE.url}/blog/nosotros` },
   openGraph: {
     title: "Acerca de Centavo",
     description: "Quiénes somos y qué hacemos.",
-    url: `${SITE.url}/nosotros`,
+    url: `${SITE.url}/blog/nosotros`,
   },
 };
 
@@ -146,7 +146,7 @@ export default async function AboutPage() {
           __html: JSON.stringify(
             breadcrumbsJsonLd([
               { name: "Inicio", url: "/" },
-              { name: "Nosotros", url: "/nosotros" },
+              { name: "Nosotros", url: "/blog/nosotros" },
             ])
           ),
         }}

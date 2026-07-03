@@ -6,7 +6,7 @@ import { SITE } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Aviso de Privacidad",
   description: "Aviso de privacidad de Centavos. Cómo recopilamos, usamos y protegemos tu información.",
-  alternates: { canonical: `${SITE.url}/privacidad` },
+  alternates: { canonical: `${SITE.url}/blog/privacidad` },
 };
 
 export default function PrivacidadPage() {

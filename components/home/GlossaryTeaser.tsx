@@ -20,7 +20,7 @@ export async function GlossaryTeaser() {
           </div>
         ))}
       </div>
-      <Link href="/glosario" className="inline-block mt-4 text-[13px] text-mandarina-deep font-bold">
+      <Link href="/blog/glosario" className="inline-block mt-4 text-[13px] text-mandarina-deep font-bold">
         Ver glosario completo →
       </Link>
     </section>

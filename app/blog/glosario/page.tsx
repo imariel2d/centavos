@@ -9,11 +9,11 @@ import { definedTermSetJsonLd, breadcrumbsJsonLd, SITE } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Glosario · Términos financieros sin choro",
   description: "Glosario de términos financieros en español mexicano, explicados en cristiano y también como si tuvieras 5 años.",
-  alternates: { canonical: `${SITE.url}/glosario` },
+  alternates: { canonical: `${SITE.url}/blog/glosario` },
   openGraph: {
     title: "Glosario financiero · Centavo",
     description: "Términos financieros explicados sin choros.",
-    url: `${SITE.url}/glosario`,
+    url: `${SITE.url}/blog/glosario`,
   },
 };
 
@@ -128,7 +128,7 @@ export default async function GlossaryPage() {
           __html: JSON.stringify(
             breadcrumbsJsonLd([
               { name: "Inicio", url: "/" },
-              { name: "Glosario", url: "/glosario" },
+              { name: "Glosario", url: "/blog/glosario" },
             ])
           ),
         }}

@@ -6,7 +6,7 @@ import { SITE } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description: "Términos y condiciones de uso de Centavos.",
-  alternates: { canonical: `${SITE.url}/terminos` },
+  alternates: { canonical: `${SITE.url}/blog/terminos` },
 };
 
 export default function TerminosPage() {

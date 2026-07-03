@@ -40,23 +40,23 @@ export const metadata: Metadata = {
     template: "%s · Centavos",
   },
   description:
-    "Blog financiero mexicano. Le ayudamos a la gente a perderle el miedo al dinero. Sin choros, sin tecnicismos.",
+    "La app para anotar tus gastos y controlar tu presupuesto, más un blog de finanzas personales para México. Sin choros, sin tecnicismos.",
   keywords: [
+    "app para anotar gastos", "control de gastos", "app de presupuesto personal",
+    "app de finanzas personales", "gastos hormiga", "suscripciones",
     "finanzas personales", "México", "ahorro", "AFORE",
-    "PPR", "Buró de Crédito", "tarjeta de crédito", "inversión",
-    "educación financiera", "finanzas para jóvenes",
+    "PPR", "Buró de Crédito", "educación financiera",
   ],
   authors: [{ name: "Centavos", url: SITE.url }],
   creator: "Centavos",
   publisher: "Centavos",
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "es_MX",
     url: SITE.url,
     siteName: SITE.name,
     title: "Centavos · Finanzas sin sustos para la gente",
-    description: "Blog financiero mexicano para jóvenes que apenas empiezan con el dinero.",
+    description: "La app para anotar tus gastos y el blog para entender tu lana. Sin choros.",
     images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "Centavos" }],
   },
   twitter: {

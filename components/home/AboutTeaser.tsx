@@ -24,7 +24,7 @@ export function AboutTeaser() {
         <p className="text-sm leading-relaxed mb-3">
           Somos un equipo de gente apacionada por las finanzas y queremos enseñarte lo que nadie nos enseñó.
         </p>
-        <Link href="/nosotros" className="text-[12px] text-mandarina-deep font-bold">
+        <Link href="/blog/nosotros" className="text-[12px] text-mandarina-deep font-bold">
           Conoce al equipo →
         </Link>
       </div>

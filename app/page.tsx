@@ -1,23 +1,36 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Header } from "@/components/Header";
 import { AppFooter } from "@/components/home/AppFooter";
 import { AppStoreBadges } from "@/components/home/AppStoreBadges";
 import { PhoneFrame, PulsoMock, AnotarMock, SuscripcionesMock } from "@/components/home/PhoneMock";
 import { getAppLinks } from "@/lib/articles";
-import { SITE } from "@/lib/seo";
+import { SITE, appStoreId, mobileApplicationJsonLd } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "La app · Tu cuaderno de lana en el bolsillo",
-  description:
-    "Centavos es un cuaderno, no un banco. Anota tus gastos, bolsas y alcancías y por fin ve a dónde se va tu dinero. Sin conectar tu banco, sin sermones. Descárgala gratis.",
-  alternates: { canonical: "/app" },
-  openGraph: {
-    type: "website",
-    url: `${SITE.url}/app`,
-    title: "Centavos · Finanzas sin sustos",
-    description: "Anota gastos, bolsas y alcancías. Sin conectar tu banco. Descárgala gratis.",
-  },
-};
+const HOME_TITLE = "Centavos · App para anotar gastos y controlar tu presupuesto";
+const HOME_DESCRIPTION =
+  "App gratis para el control de gastos: anota lo que gastas, arma presupuestos por categoría y lleva tus suscripciones. Sin conectar tu banco. Para iOS y Android, hecha en México.";
+
+export async function generateMetadata(): Promise<Metadata> {
+  // Next.js dedupes this fetch with the page render.
+  const { storeUrl } = await getAppLinks();
+  const iosId = appStoreId(storeUrl);
+
+  return {
+    title: { absolute: HOME_TITLE },
+    description: HOME_DESCRIPTION,
+    alternates: { canonical: "/" },
+    // Smart App Banner de Safari — manda a la App Store a quien ya navega en iPhone.
+    ...(iosId ? { itunes: { appId: iosId } } : {}),
+    openGraph: {
+      type: "website",
+      url: SITE.url,
+      title: HOME_TITLE,
+      description:
+        "Anota gastos, arma presupuestos y controla tus suscripciones. Sin conectar tu banco. Descárgala gratis.",
+    },
+  };
+}
 
 const FEATURES = [
   { emoji: "📊", bg: "bg-peach", t: "Pulso diario", d: "Un semáforo te dice si vas bien, aguas o ya te pasaste. De un vistazo." },
@@ -40,6 +53,8 @@ export default async function AppPage() {
 
   return (
     <>
+      <Script id="ld-mobile-app" type="application/ld+json" strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(mobileApplicationJsonLd({ storeUrl, playUrl })) }} />
       <a
         href="#contenido"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:text-bg focus:rounded-full focus:px-5 focus:py-2.5 focus:text-sm focus:font-bold"

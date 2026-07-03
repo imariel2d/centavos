@@ -17,7 +17,8 @@ export function organizationJsonLd() {
       // "https://twitter.com/centavo_mx",
       // "https://instagram.com/centavos.mx",
     ],
-    "description": "Blog financiero mexicano: le ayudamos a la gente a perderle el miedo al dinero.",
+    "description":
+      "App gratuita para anotar gastos y controlar tu presupuesto, y blog de finanzas personales para México.",
   };
 }
 
@@ -30,7 +31,7 @@ export function websiteJsonLd() {
     "inLanguage": "es-MX",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": { "@type": "EntryPoint", "urlTemplate": `${SITE_URL}/buscar?q={search_term_string}` },
+      "target": { "@type": "EntryPoint", "urlTemplate": `${SITE_URL}/blog/buscar?q={search_term_string}` },
       "query-input": "required name=search_term_string",
     },
   };
@@ -58,7 +59,7 @@ export function articleJsonLd(article: Article) {
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `${SITE_URL}/articulos/${article.slug}`,
+      "@id": `${SITE_URL}/blog/articulos/${article.slug}`,
     },
     "inLanguage": "es-MX",
     "articleSection": article.category,
@@ -124,6 +125,38 @@ export function collectionPageJsonLd(args: {
       "numberOfItems": args.itemCount,
     },
   };
+}
+
+/**
+ * Schema de la app (rich results de descarga en Google).
+ * Sin aggregateRating hasta tener reseñas reales — Google penaliza cifras inventadas.
+ */
+export function mobileApplicationJsonLd(args: { storeUrl?: string; playUrl?: string }) {
+  const sameAs = [args.storeUrl, args.playUrl].filter(Boolean) as string[];
+  return {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": SITE_NAME,
+    "description":
+      "App para anotar tus gastos, armar presupuestos por categoría y llevar tus suscripciones. Sin conectar tu banco. Gratis para iOS y Android.",
+    "url": SITE_URL,
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "iOS, Android",
+    "inLanguage": "es-MX",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "MXN" },
+    ...(args.storeUrl ? { "installUrl": args.storeUrl } : {}),
+    ...(sameAs.length ? { "sameAs": sameAs } : {}),
+    "publisher": {
+      "@type": "Organization",
+      "name": SITE_NAME,
+      "url": SITE_URL,
+    },
+  };
+}
+
+/** Saca el ID numérico de una URL de App Store (…/app/id1234567890) para el Smart App Banner. */
+export function appStoreId(storeUrl: string | undefined): string | undefined {
+  return storeUrl?.match(/\/id(\d+)/)?.[1];
 }
 
 export const SITE = { url: SITE_URL, name: SITE_NAME };

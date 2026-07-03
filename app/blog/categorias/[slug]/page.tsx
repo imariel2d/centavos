@@ -46,11 +46,11 @@ export async function generateMetadata(
   return {
     title,
     description,
-    alternates: { canonical: `${SITE.url}/categorias/${cat.slug}` },
+    alternates: { canonical: `${SITE.url}/blog/categorias/${cat.slug}` },
     openGraph: {
       title: cat.seoTitle ?? `${name} · Centavos`,
       description: cat.seoDescription ?? blurb,
-      url: `${SITE.url}/categorias/${cat.slug}`,
+      url: `${SITE.url}/blog/categorias/${cat.slug}`,
     },
   };
 }
@@ -243,7 +243,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           __html: JSON.stringify(
             breadcrumbsJsonLd([
               { name: "Inicio", url: "/" },
-              { name, url: `/categorias/${cat.slug}` },
+              { name, url: `/blog/categorias/${cat.slug}` },
             ])
           ),
         }}
@@ -256,7 +256,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
             collectionPageJsonLd({
               name,
               description: cat.seoDescription ?? blurb,
-              url: `/categorias/${cat.slug}`,
+              url: `/blog/categorias/${cat.slug}`,
               itemCount: articles.length,
             })
           ),

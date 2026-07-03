@@ -45,7 +45,7 @@ function categoryLabel(slug: string): string {
 }
 
 function articleRow(a: DigestArticle, siteUrl: string): string {
-  const url = `${siteUrl}/articulos/${a.slug}`;
+  const url = `${siteUrl}/blog/articulos/${a.slug}`;
   const cat = categoryLabel(a.category);
   return `
   <tr>
@@ -85,7 +85,7 @@ export function digestEmailHtml({
   preferencesUrl,
   edition,
 }: DigestEmailParams): string {
-  const siteUrl = preferencesUrl.split("/preferencias")[0];
+  const siteUrl = preferencesUrl.split("/blog/preferencias")[0];
   const rows = articles.map((a) => articleRow(a, siteUrl)).join("");
 
   return `<!doctype html>

@@ -36,7 +36,7 @@ export async function generateMetadata(
   const article = await getArticleBySlug(slug);
   if (!article) return {};
 
-  const url = `${SITE.url}/articulos/${article.slug}`;
+  const url = `${SITE.url}/blog/articulos/${article.slug}`;
   const ogImage = ogImageUrl(article.heroImage.url);
   const imageAlt = article.heroImage.alt || article.title;
   const image = ogImage
@@ -151,7 +151,7 @@ export default async function ArticlePage({
             breadcrumbsJsonLd([
               { name: "Inicio", url: "/" },
               { name: catName, url: `/categorias/${categorySlug}` },
-              { name: article.short, url: `/articulos/${article.slug}` },
+              { name: article.short, url: `/blog/articulos/${article.slug}` },
             ])
           ),
         }}

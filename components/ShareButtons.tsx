@@ -11,8 +11,8 @@ export function ShareButtons({ title, slug }: Props) {
   const [copied, setCopied] = useState(false);
 
   const url = typeof window !== "undefined"
-    ? `${window.location.origin}/articulos/${slug}`
-    : `/articulos/${slug}`;
+    ? `${window.location.origin}/blog/articulos/${slug}`
+    : `/blog/articulos/${slug}`;
 
   function shareWhatsApp() {
     const text = `${title} — ${url}`;
