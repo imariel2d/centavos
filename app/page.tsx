@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { AppFooter } from "@/components/home/AppFooter";
 import { AppStoreBadges } from "@/components/home/AppStoreBadges";
 import { PhoneFrame, PulsoMock, AnotarMock, SuscripcionesMock } from "@/components/home/PhoneMock";
-import { getAppLinks } from "@/lib/articles";
+import { getAppLinks } from "@/lib/store-links";
 import { SITE, appStoreId, mobileApplicationJsonLd } from "@/lib/seo";
 
 const HOME_TITLE = "Centavos · App para anotar gastos y controlar tu presupuesto";
@@ -46,7 +46,7 @@ const STEPS = [
 
 const TRUST = ["No se conecta a tu banco", "Nunca toca tu dinero", "Tus datos son tuyos", "Hecho en México 🇲🇽"];
 
-export const revalidate = false; // Página 100% estática — ya no depende de Directus.
+export const revalidate = false; // Página 100% estática.
 
 export default async function AppPage() {
   const { storeUrl, playUrl } = await getAppLinks();
@@ -61,7 +61,7 @@ export default async function AppPage() {
       >
         Saltar al contenido
       </a>
-      <Header variant="minimal" />
+      <Header />
 
       <main id="contenido">
         {/* HERO */}

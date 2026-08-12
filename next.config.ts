@@ -12,8 +12,6 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       // Security + SEO headers on all responses.
-      // Note: do NOT add X-Robots-Tag here — it would override the per-page
-      // noindex logic (e.g. /preview/* and /buscar) and break granular indexing.
       {
         source: "/(.*)",
         headers: [

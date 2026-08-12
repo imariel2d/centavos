@@ -1,6 +1,5 @@
 // Badges de descarga (App Store / Google Play).
-// Las URLs vienen del singleton home_page en Directus (getAppLinks);
-// un badge sin URL no se muestra — nada de links rotos.
+// Las URLs vienen de lib/store-links.ts; un badge sin URL no se muestra.
 
 type Props = {
   variant?: "dark" | "light";
