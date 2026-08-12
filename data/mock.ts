@@ -184,6 +184,6 @@ export const HOME_PAGE: HomePageData = {
 
 // Store links de la app (home_page.app_store_url / app_play_url en Directus).
 export const APP_LINKS = {
-  storeUrl: "https://apps.apple.com/mx/app/centavos/id0000000000",
-  playUrl: "https://play.google.com/store/apps/details?id=mx.centavos.app",
+  storeUrl: "https://apps.apple.com/mx/app/centavos/id6781459932",
+  playUrl: "https://play.google.com/store/apps/details?id=mx.centavos.cuaderno",
 };

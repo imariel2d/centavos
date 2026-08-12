@@ -46,7 +46,7 @@ const STEPS = [
 
 const TRUST = ["No se conecta a tu banco", "Nunca toca tu dinero", "Tus datos son tuyos", "Hecho en México 🇲🇽"];
 
-export const revalidate = 60; // ISR: recoge cambios de links desde Directus
+export const revalidate = false; // Página 100% estática — ya no depende de Directus.
 
 export default async function AppPage() {
   const { storeUrl, playUrl } = await getAppLinks();

@@ -48,15 +48,18 @@ const nextConfig: NextConfig = {
         destination: "https://centavos.mx/:path*",
         permanent: true,
       },
-      // Blog movido de la raíz a /blog — 301s para conservar el ranking de las URLs viejas.
-      { source: "/articulos/:slug",  destination: "/blog/articulos/:slug",  permanent: true },
-      { source: "/categorias/:slug", destination: "/blog/categorias/:slug", permanent: true },
-      { source: "/glosario",         destination: "/blog/glosario",         permanent: true },
-      { source: "/nosotros",         destination: "/blog/nosotros",         permanent: true },
-      { source: "/buscar",           destination: "/blog/buscar",           permanent: true },
-      { source: "/preferencias",     destination: "/blog/preferencias",     permanent: true },
-      { source: "/privacidad",       destination: "/blog/privacidad",       permanent: true },
-      { source: "/terminos",         destination: "/blog/terminos",         permanent: true },
+      // El blog ya no está disponible: todo /blog/* (y las URLs viejas que
+      // apuntaban al blog) se redirige a la home con 301.
+      { source: "/blog",             destination: "/", permanent: true },
+      { source: "/blog/:path*",      destination: "/", permanent: true },
+      { source: "/articulos/:slug",  destination: "/", permanent: true },
+      { source: "/categorias/:slug", destination: "/", permanent: true },
+      { source: "/glosario",         destination: "/", permanent: true },
+      { source: "/nosotros",         destination: "/", permanent: true },
+      { source: "/buscar",           destination: "/", permanent: true },
+      { source: "/preferencias",     destination: "/", permanent: true },
+      { source: "/privacidad",       destination: "/", permanent: true },
+      { source: "/terminos",         destination: "/", permanent: true },
       // La landing de la app vivía en /app; ahora es la página raíz.
       { source: "/app",              destination: "/",                      permanent: true },
     ];

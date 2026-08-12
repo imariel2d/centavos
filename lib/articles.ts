@@ -418,20 +418,13 @@ const HOME_AD_FIELDS = [
   "ad_body", "ad_cta", "ad_href", "ad_image", "ad_image_alt",
 ].join(",");
 
-/** Store links de la app desde el singleton home_page. */
+/** Store links canónicos de la app. Antes venían de Directus; ahora son estáticos. */
+const APP_STORE_URL = "https://apps.apple.com/mx/app/centavos/id6781459932";
+const APP_PLAY_URL = "https://play.google.com/store/apps/details?id=mx.centavos.cuaderno";
+
+/** Store links de la app. Directus quedó fuera de servicio, así que son constantes. */
 export async function getAppLinks(): Promise<{ storeUrl?: string; playUrl?: string }> {
-  if (USE_MOCK_DATA) return MOCK_APP_LINKS;
-  try {
-    const row = await directusOne<DHomePage>(
-      `/items/home_page?fields=app_store_url,app_play_url`,
-    );
-    return {
-      storeUrl: row?.app_store_url?.trim() || undefined,
-      playUrl: row?.app_play_url?.trim() || undefined,
-    };
-  } catch {
-    return {};
-  }
+  return { storeUrl: APP_STORE_URL, playUrl: APP_PLAY_URL };
 }
 
 /** Fetches just the ad slot — for pages that don't need the rest of the home payload. */
